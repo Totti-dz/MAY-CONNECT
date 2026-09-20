@@ -1,0 +1,2441 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لقاء شباب الجزائر - M.A.Y CONNECT | المكتب الولائي تيارت</title>
+    
+    <!-- الخط الرسمي: Cairo من Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Supabase Client v2 (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- SheetJS لتصدير ملفات Excel (CDN) -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    
+    <!-- مكتبة الأيقونات FontAwesome 6 (CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- إعدادات ألوان الجزائر ونظام التصميم الزجاجي Translucent Glassmorphism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dz: {
+                            green: '#006233',
+                            red: '#D21034',
+                            dark: '#00381d',
+                            emerald: '#014725',
+                            light: '#f0fdf4'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: #f1f5f9;
+        }
+
+        /* انتقال الصفحات فائق النعومة وبدون سكرولينغ وتوسيط 100% */
+        .screen {
+            display: none !important;
+            opacity: 0;
+            width: 100%;
+        }
+        .screen.active {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            animation: screenFadeEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes screenFadeEntrance {
+            0% {
+                opacity: 0;
+                transform: scale(0.985) translateY(6px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* خلفيات زجاجية شفافة فخمة Glassmorphism ومحاذاة مركزية */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 20px 40px -15px rgba(0, 56, 29, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+        }
+
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.90);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* بطاقة المنخرط الرقمية الفخمة */
+        .membership-card-badge {
+            background: linear-gradient(135deg, #00381d 0%, #006233 60%, #014725 100%);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #eab308;
+            box-shadow: 0 20px 40px -10px rgba(0, 56, 29, 0.4), 0 0 20px rgba(234, 179, 8, 0.2);
+        }
+        .membership-card-badge::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(234, 179, 8, 0.12) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* توهج إضاءة ديناميكي */
+        .glow-sphere {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            opacity: 0.30;
+            z-index: 0;
+        }
+
+        /* بطاقات الاهتمامات التفاعلية */
+        .interest-chip {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+        .interest-chip.selected {
+            background: #006233 !important;
+            color: #ffffff !important;
+            border-color: #006233 !important;
+            box-shadow: 0 4px 14px rgba(0, 98, 51, 0.35);
+            transform: translateY(-2px);
+        }
+
+        /* أزرار تفاعلية فخمة */
+        .btn-luxury {
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-luxury:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -4px rgba(0, 98, 51, 0.35);
+        }
+        .btn-luxury:active {
+            transform: translateY(0);
+        }
+
+        /* شريط التمرير */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen selection:bg-dz-green selection:text-white relative overflow-x-hidden">
+
+    <!-- كرات الإضاءة المحيطية التي تعطي تأثيراً زجاجياً شفافاً -->
+    <div class="glow-sphere w-96 h-96 bg-emerald-600 top-[-60px] right-[-60px]"></div>
+    <div class="glow-sphere w-96 h-96 bg-red-600 bottom-[-60px] left-[-60px]"></div>
+    <div class="glow-sphere w-72 h-72 bg-emerald-400 top-1/2 left-1/4 opacity-15"></div>
+
+    <!-- ============================================================== -->
+    <!-- نظام التنبيهات المنبثقة TOAST NOTIFICATION                      -->
+    <!-- ============================================================== -->
+    <div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-md pointer-events-none transition-all duration-300">
+        <div id="toast" class="hidden pointer-events-auto transform transition-all duration-300 translate-y-[-20px] opacity-0 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl text-sm font-bold text-white border border-white/20">
+            <i id="toastIcon" class="fas fa-check-circle text-xl shrink-0"></i>
+            <span id="toastMessage" class="flex-1 leading-snug"></span>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 1. شاشة البداية والترحيب الرسمية (SPLASH SCREEN)               -->
+    <!-- ============================================================== -->
+    <section id="splashScreen" class="screen active min-h-screen flex flex-col justify-between p-4 sm:p-6 relative z-10 w-full">
+        
+        <!-- الشريط العلوي الشفاف الموسط -->
+        <header class="w-full max-w-5xl mx-auto flex items-center justify-between pt-2 pb-3">
+            <div class="inline-flex items-center gap-2.5 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/60 shadow-sm text-xs font-bold text-slate-700">
+                <span class="text-sm">🇩🇿</span>
+                <span>الجمهورية الجزائرية الديمقراطية الشعبية</span>
+            </div>
+            <div class="text-xs font-black text-dz-green bg-emerald-50/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-emerald-200">
+                المكتب الولائي • تيارت
+            </div>
+        </header>
+
+        <!-- المحتوى المركزي الموسط بدقة -->
+        <main class="max-w-4xl mx-auto w-full my-auto py-4 flex flex-col items-center text-center space-y-6">
+            
+            <!-- الشعار الرسمي الدقيق للجمعية المستخرج من صورتك -->
+            <div class="relative group cursor-pointer" onclick="showScreen('registerScreen')">
+                <div class="absolute -inset-2 bg-gradient-to-r from-emerald-600 via-yellow-400 to-dz-red rounded-full blur-xl opacity-50 group-hover:opacity-80 transition duration-500"></div>
+                <div class="relative w-36 h-36 sm:w-44 sm:h-44 rounded-full p-2 bg-white shadow-2xl border-4 border-white/90 overflow-hidden flex items-center justify-center transform group-hover:scale-105 transition-all duration-300 mx-auto">
+                    <img src="assets/logo.jpg" onerror="this.src='__LOGO_BASE64__'" alt="شعار جمعية لقاء شباب الجزائر" class="w-full h-full object-contain rounded-full">
+                </div>
+                <div class="absolute -bottom-2 bg-dz-red text-white text-[11px] font-black px-4 py-0.5 rounded-full shadow-lg left-1/2 -translate-x-1/2 tracking-wider">
+                    M.A.Y CONNECT
+                </div>
+            </div>
+
+            <!-- بطاقة الترحيب الرسمية الكبرى - بالصورة الثانية كخلفية كما طلبت -->
+            <div class="w-full rounded-3xl overflow-hidden shadow-2xl border border-white/80 relative transform hover:scale-[1.01] transition duration-500">
+                <div class="relative min-h-[230px] sm:min-h-[270px] flex items-center justify-center p-6 sm:p-8 bg-slate-900">
+                    <img src="assets/banner.jpg" onerror="this.src='__BANNER_BASE64__'" alt="خلفية لقاء شباب الجزائر" class="absolute inset-0 w-full h-full object-cover opacity-90">
+                    
+                    <!-- طبقة زجاجية شفافة متدرجة لتبرز النص دون إخفاء ملامح الصورة -->
+                    <div class="absolute inset-0 bg-gradient-to-r from-emerald-950/85 via-emerald-900/65 to-slate-950/80 backdrop-blur-[2px]"></div>
+                    
+                    <!-- نص الرسالة الترحيبية الرسمية -->
+                    <div class="relative z-10 text-white max-w-2xl text-center space-y-3 mx-auto">
+                        <div class="inline-flex items-center gap-2 bg-yellow-400/20 backdrop-blur-md px-4 py-1 rounded-full border border-yellow-300/30 text-yellow-300 text-xs font-black">
+                            <i class="fas fa-bullhorn"></i>
+                            <span>رسالة ترحيبية رسمية من المكتب الولائي لولاية تيارت</span>
+                        </div>
+                        <h2 class="text-2xl sm:text-4xl font-black leading-tight text-white drop-shadow-lg">
+                            أهلاً بكم في فضاء <span class="text-red-400">لقاء شباب الجزائر</span>
+                        </h2>
+                        <div class="flex items-center justify-center gap-3 text-emerald-300 font-extrabold text-sm sm:text-base">
+                            <span>حوار</span> • <span>عمل</span> • <span>رقي</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-200 leading-relaxed max-w-xl mx-auto font-medium">
+                            "يسر المكتب الولائي لولاية تيارت أن يفتح أبواب المنصة الرقمية الموحدة لجميع الشباب الجزائري من 18 إلى 40 سنة، للمشاركة الفعالة في الأنشطة والمبادرات الجمعوية وبناء جزائر الغد."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- أزرار الإجراء السلسة للانتقال الفوري الموسطة -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md mx-auto pt-2">
+                <button onclick="showScreen('registerScreen')" class="btn-luxury w-full py-4 px-6 rounded-2xl bg-dz-green hover:bg-dz-dark text-white font-black text-sm shadow-xl flex items-center justify-center gap-2.5 transition">
+                    <i class="fas fa-user-plus"></i>
+                    <span>انضم إلينا الآن (منخرط جديد)</span>
+                    <i class="fas fa-arrow-left text-xs"></i>
+                </button>
+                <button onclick="showScreen('loginScreen')" class="btn-luxury w-full py-4 px-6 rounded-2xl bg-white/90 hover:bg-white text-dz-green border-2 border-dz-green/30 font-black text-sm shadow-lg flex items-center justify-center gap-2.5 transition">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>تسجيل الدخول للمنصة</span>
+                </button>
+            </div>
+        </main>
+
+        <!-- تذييل الصفحة الشفاف ومعلومات الاتصال الرسمية الثلاث المحدثة -->
+        <footer class="max-w-5xl mx-auto w-full pt-4 pb-2 text-center">
+            <div class="glass-card py-2.5 px-6 rounded-2xl inline-flex flex-wrap items-center justify-center gap-5 text-xs text-slate-700 font-bold shadow-sm mx-auto">
+                <a href="https://instagram.com/may.connect.dz" target="_blank" class="hover:text-pink-600 flex items-center gap-1.5 transition">
+                    <i class="fab fa-instagram text-pink-600 text-sm"></i>
+                    <span dir="ltr">may.connect.dz</span>
+                </a>
+                <span class="opacity-30">|</span>
+                <a href="https://wa.me/213671865534" target="_blank" class="hover:text-emerald-600 flex items-center gap-1.5 transition" dir="ltr">
+                    <i class="fab fa-whatsapp text-emerald-600 text-sm"></i>
+                    <span>+213 6 71 86 55 34</span>
+                </a>
+                <span class="opacity-30">|</span>
+                <a href="https://facebook.com/MeetingOfAlgeriasYouth.Tiaret" target="_blank" class="hover:text-blue-600 flex items-center gap-1.5 transition">
+                    <i class="fab fa-facebook text-blue-600 text-sm"></i>
+                    <span dir="ltr">MeetingOfAlgeriasYouth.Tiaret</span>
+                </a>
+            </div>
+        </footer>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- 2. شاشة تسجيل الدخول المخصصة المستقلة الموسطة 100% (LOGIN)      -->
+    <!-- ============================================================== -->
+    <section id="loginScreen" class="screen min-h-screen p-4 relative z-10 w-full">
+        <div class="w-full flex items-center justify-center my-auto min-h-screen">
+            <div class="glass-card w-full max-w-md mx-auto rounded-3xl p-6 sm:p-8 relative shadow-2xl border-t-8 border-dz-green text-right">
+                
+                <!-- أزرار التنقل السريعة -->
+                <button onclick="showScreen('splashScreen')" class="absolute top-5 left-5 text-slate-500 hover:text-dz-green text-xs flex items-center gap-1 font-bold transition bg-slate-100/90 hover:bg-white px-3 py-1.5 rounded-full shadow-sm">
+                    <span>الرئيسية</span>
+                    <i class="fas fa-home"></i>
+                </button>
+
+                <!-- الشعار الرسمي -->
+                <div class="text-center mb-6 pt-1">
+                    <div class="w-20 h-20 mx-auto mb-2 p-1.5 bg-white rounded-full shadow-lg border-2 border-dz-green/30">
+                        <img src="assets/logo.jpg" onerror="this.src='__LOGO_BASE64__'" alt="شعار MAY" class="w-full h-full object-contain rounded-full">
+                    </div>
+                    <h2 class="text-2xl font-black text-dz-green">تسجيل الدخول</h2>
+                    <p class="text-xs text-slate-500 font-bold mt-0.5">لقاء شباب الجزائر - المكتب الولائي لولاية تيارت</p>
+                </div>
+
+                <!-- نموذج الدخول -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                            <i class="fas fa-phone-alt text-dz-green ml-1"></i>
+                            <span>رقم الهاتف (للشباب) أو البريد (للإدارة)</span>
+                        </label>
+                        <input type="text" id="loginIdentifier" placeholder="06XXXXXXXX أو بريد الإدارة" class="w-full bg-white/90 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-dz-green focus:ring-2 focus:ring-dz-green/20 focus:outline-none transition font-medium shadow-inner">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                            <i class="fas fa-lock text-dz-green ml-1"></i>
+                            <span>كلمة المرور / الرقم السري</span>
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="loginPassword" placeholder="كلمة المرور الخاصة بك" class="w-full bg-white/90 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-dz-green focus:ring-2 focus:ring-dz-green/20 focus:outline-none transition font-medium text-left shadow-inner" dir="ltr">
+                            <button type="button" onclick="togglePassword('loginPassword', this)" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                <i class="far fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button onclick="handleLogin()" id="btnLoginSubmit" class="btn-luxury w-full bg-dz-green hover:bg-dz-dark text-white font-black py-3.5 rounded-xl shadow-xl flex items-center justify-center gap-2">
+                            <span>دخول للمنصة</span>
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </div>
+
+                    <div class="text-center pt-2">
+                        <button onclick="showScreen('registerScreen')" class="text-xs font-bold text-dz-green hover:underline">
+                            ليس لديك حساب بعد؟ <span class="font-black text-dz-red">سجّل كمنخرط جديد مجاناً</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- 3. شاشة التسجيل المستقلة الموسطة 100% (REGISTER SCREEN)        -->
+    <!-- ============================================================== -->
+    <section id="registerScreen" class="screen min-h-screen p-4 relative z-10 py-6 w-full">
+        <div class="w-full flex items-center justify-center my-auto min-h-screen">
+            <div class="glass-card w-full max-w-xl mx-auto rounded-3xl p-6 sm:p-8 relative shadow-2xl border-t-8 border-dz-green text-right">
+                
+                <!-- أزرار التنقل العلوية -->
+                <div class="flex items-center justify-between mb-4">
+                    <button onclick="showScreen('splashScreen')" class="text-slate-500 hover:text-dz-green text-xs flex items-center gap-1 font-bold transition bg-slate-100/90 hover:bg-white px-3 py-1.5 rounded-full shadow-sm">
+                        <i class="fas fa-arrow-right ml-1"></i>
+                        <span>الرئيسية</span>
+                    </button>
+
+                    <!-- مؤشر الخطوات الأنيق -->
+                    <div class="flex items-center gap-2 bg-slate-100 px-3 py-1 rounded-full text-xs font-bold text-slate-600">
+                        <span id="stepBadge1" class="bg-dz-green text-white w-5 h-5 rounded-full inline-flex items-center justify-center text-[10px] font-black">1</span>
+                        <span id="stepTitle">المعلومات الشخصية</span>
+                        <span class="text-slate-400">/</span>
+                        <span id="stepBadge2" class="bg-slate-300 text-slate-600 w-5 h-5 rounded-full inline-flex items-center justify-center text-[10px] font-black">2</span>
+                    </div>
+
+                    <button onclick="showScreen('loginScreen')" class="text-dz-green hover:underline text-xs font-bold">
+                        <span>تسجيل الدخول</span>
+                    </button>
+                </div>
+
+                <!-- العنوان المصغر مع الشعار -->
+                <div class="text-center mb-5">
+                    <div class="w-14 h-14 mx-auto mb-1 p-1 bg-white rounded-full shadow border border-dz-green/30">
+                        <img src="assets/logo.jpg" onerror="this.src='__LOGO_BASE64__'" alt="شعار MAY" class="w-full h-full object-contain rounded-full">
+                    </div>
+                    <h2 class="text-xl font-black text-dz-green">استمارة انخراط جديد بالجمعية</h2>
+                    <p class="text-[11px] text-slate-500 font-bold">المكتب الولائي لولاية تيارت • الفئة العمرية (18 - 40 سنة)</p>
+                </div>
+
+                <!-- ================= الخطوة 1: المعلومات الشخصية ================= -->
+                <div id="registerStep1" class="space-y-3.5">
+                    <!-- الاسم واللقب -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">الاسم <span class="text-dz-red">*</span></label>
+                            <input type="text" id="regFirstName" placeholder="مثال: يوسف" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-dz-green focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">اللقب <span class="text-dz-red">*</span></label>
+                            <input type="text" id="regLastName" placeholder="مثال: منصوري" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-dz-green focus:outline-none transition">
+                        </div>
+                    </div>
+
+                    <!-- رقم الهاتف -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">
+                            <i class="fas fa-mobile-alt text-dz-green ml-1"></i>
+                            <span>رقم الهاتف المحمول (فريد) <span class="text-dz-red">*</span></span>
+                        </label>
+                        <input type="tel" id="regPhone" placeholder="06XXXXXXXX أو 05XXXXXXXX" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-dz-green focus:outline-none transition text-left font-mono" dir="ltr">
+                    </div>
+
+                    <!-- الولاية والبلدية -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">
+                                <i class="fas fa-map-marked-alt text-dz-red ml-1"></i>
+                                <span>الولاية (58 ولاية) <span class="text-dz-red">*</span></span>
+                            </label>
+                            <select id="regWilaya" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs sm:text-sm focus:border-dz-green focus:outline-none transition font-semibold">
+                                <option value="">-- اختر ولايتك --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">البلدية <span class="text-dz-red">*</span></label>
+                            <input type="text" id="regCommune" placeholder="اسم البلدية" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-dz-green focus:outline-none transition">
+                        </div>
+                    </div>
+
+                    <!-- تاريخ الميلاد وكلمة المرور -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">
+                                <i class="fas fa-birthday-cake text-dz-green ml-1"></i>
+                                <span>تاريخ الميلاد (18 - 40 سنة) <span class="text-dz-red">*</span></span>
+                            </label>
+                            <input type="date" id="regDob" onchange="calculateRealTimeAge(this.value)" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-dz-green focus:outline-none transition">
+                            <div id="ageFeedback" class="text-[10px] mt-1 font-bold"></div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">
+                                <i class="fas fa-key text-dz-green ml-1"></i>
+                                <span>كلمة المرور الخاصة بك <span class="text-dz-red">*</span></span>
+                            </label>
+                            <div class="relative">
+                                <input type="password" id="regPassword" placeholder="اكتب كلمة المرور" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm focus:border-dz-green focus:outline-none transition font-medium text-left" dir="ltr">
+                                <button type="button" onclick="togglePassword('regPassword', this)" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- زر الانتقال للخطوة 2 -->
+                    <div class="pt-3">
+                        <button onclick="goToRegisterStep2()" class="btn-luxury w-full bg-dz-green hover:bg-dz-dark text-white font-black py-3 rounded-xl shadow-lg flex items-center justify-center gap-2">
+                            <span>التالي: الاهتمامات وميثاق الشروط</span>
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ================= الخطوة 2: الاهتمامات والشروط ================= -->
+                <div id="registerStep2" class="hidden space-y-3.5">
+                    
+                    <!-- قائمة النشاطات الـ 33 -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-xs font-bold text-slate-700">
+                                <i class="fas fa-star text-amber-500 ml-1"></i>
+                                <span>المجالات والاهتمامات المفضلة (اختر ما يناسبك):</span>
+                            </label>
+                            <span id="selectedChipsCount" class="text-[11px] font-black text-dz-green bg-emerald-100 px-2 py-0.5 rounded-full">0 محددة</span>
+                        </div>
+                        <div class="p-2.5 border border-slate-300 rounded-2xl bg-white max-h-36 overflow-y-auto">
+                            <div id="interestsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                                <!-- تتعبأ بـ 33 اهتمام ديناميكياً -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- المربع الإجباري: الموافقة على الشروط والأحكام -->
+                    <div class="bg-amber-50/90 border-2 border-amber-300 rounded-2xl p-3.5 shadow-sm space-y-2">
+                        <div class="flex items-start gap-2.5">
+                            <input type="checkbox" id="regTermsAgreed" class="mt-1 w-4 h-4 text-dz-green border-gray-300 rounded focus:ring-dz-green cursor-pointer">
+                            <label for="regTermsAgreed" class="text-xs font-bold text-slate-800 leading-snug cursor-pointer">
+                                لقد اطّلعت ووافقت بصفة تامة على جميع <span class="text-dz-red font-black underline" onclick="openTermsModal(event)">الشروط والأحكام الخاصة بجمعية لقاء شباب الجزائر (المكتب الولائي تيارت)</span> وأتعهد بالالتزام بها.
+                            </label>
+                        </div>
+
+                        <div class="text-[11px] text-slate-600 bg-white/80 p-2.5 rounded-xl border border-amber-200 space-y-1">
+                            <p>• <strong>السن:</strong> 18 إلى 40 سنة حصراً | • <strong>النطاق:</strong> ولاية تيارت حصراً.</p>
+                            <p>• <strong>الانضباط:</strong> لا نشاط سياسي أو حزبي (قانون 12-06) | • <strong>البيانات:</strong> محمية (قانون 18-07).</p>
+                            <button type="button" onclick="openTermsModal(event)" class="text-dz-green hover:underline font-black flex items-center gap-1 mt-1">
+                                <i class="fas fa-file-contract"></i>
+                                <span>اضغط هنا لقراءة الميثاق الكامل المعتمد (7 شروط) 📜</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- أزرار الخطوة 2: رجوع + تأكيد التسجيل -->
+                    <div class="flex items-center gap-3 pt-2">
+                        <button type="button" onclick="goToRegisterStep1()" class="w-1/3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>رجوع</span>
+                        </button>
+                        <button type="button" onclick="handleRegister()" id="btnRegisterSubmit" class="btn-luxury w-2/3 bg-dz-green hover:bg-dz-dark text-white font-black py-3 rounded-xl shadow-xl flex items-center justify-center gap-2 text-xs sm:text-sm">
+                            <span>تأكيد التسجيل والانضمام الرسمي</span>
+                            <i class="fas fa-check-circle"></i>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- 4. الشاشة الرئيسية للأعضاء الشباب الموسطة (MEMBER HOME SCREEN)  -->
+    <!-- ============================================================== -->
+    <section id="homeScreen" class="screen min-h-screen pb-12 w-full">
+        
+        <!-- الشريط العلوي الفخم والشفاف -->
+        <nav class="glass-card sticky top-0 z-40 border-b border-white/60 px-4 py-3 shadow-md w-full">
+            <div class="max-w-6xl mx-auto flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 bg-white rounded-full p-1 shadow-md border-2 border-dz-green overflow-hidden">
+                        <img src="assets/logo.jpg" onerror="this.src='__LOGO_BASE64__'" alt="شعار MAY" class="w-full h-full object-contain rounded-full">
+                    </div>
+                    <div>
+                        <h1 class="text-sm sm:text-base font-black text-slate-800 leading-tight">لقاء شباب الجزائر</h1>
+                        <p class="text-[10px] text-dz-green font-bold">المكتب الولائي تيارت • M.A.Y CONNECT</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2.5">
+                    <button onclick="openMembershipCardModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-black px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 shadow transition active:scale-95 border border-yellow-300">
+                        <i class="fas fa-id-card"></i>
+                        <span class="hidden sm:inline">بطاقتي الرقمية</span>
+                    </button>
+                    <div class="hidden sm:flex items-center gap-2 bg-slate-100/90 border border-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-700">
+                        <i class="fas fa-user-circle text-dz-green text-sm"></i>
+                        <span id="navMemberName">المنخرط</span>
+                    </div>
+                    <button onclick="handleLogout()" class="bg-dz-red hover:bg-red-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md active:scale-95">
+                        <span>خروج</span>
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- المحتوى الرئيسي للمنخرط الموسط بدقة -->
+        <main class="max-w-5xl mx-auto w-full p-4 sm:p-6 space-y-6 flex-1 text-right">
+            
+            <!-- بطاقة الترحيب الكبرى الخاصة بالمنخرط (باستخدام الصورة الثانية كخلفية رسمية) -->
+            <div class="rounded-3xl overflow-hidden shadow-2xl border border-white/70 relative">
+                <div class="relative min-h-[220px] sm:min-h-[250px] p-6 sm:p-8 flex flex-col justify-between bg-slate-900">
+                    <img src="assets/banner.jpg" onerror="this.src='__BANNER_BASE64__'" alt="خلفية ترحيبية" class="absolute inset-0 w-full h-full object-cover opacity-90">
+                    <div class="absolute inset-0 bg-gradient-to-r from-emerald-950/90 via-emerald-900/75 to-slate-950/85 backdrop-blur-[2px]"></div>
+                    
+                    <div class="relative z-10 space-y-2">
+                        <div class="flex items-center justify-between flex-wrap gap-2">
+                            <div class="inline-flex items-center gap-2 bg-yellow-400/20 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-black text-yellow-300 border border-yellow-300/30">
+                                <i class="fas fa-id-card"></i>
+                                <span>عضوية رسمية فعالة</span>
+                            </div>
+                            <button onclick="openMembershipCardModal()" class="bg-white/20 hover:bg-white/30 text-white text-xs font-bold px-3 py-1 rounded-xl backdrop-blur-md border border-white/30 flex items-center gap-1.5 transition">
+                                <i class="fas fa-qrcode"></i>
+                                <span>عرض واستظهار بطاقة المنخرط 🆔</span>
+                            </button>
+                        </div>
+                        <h2 class="text-2xl sm:text-4xl font-black text-white drop-shadow-md">
+                            مرحباً بك يا <span id="homeMemberFullName" class="text-yellow-300"></span> 👋
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-200 max-w-2xl leading-relaxed font-medium">
+                            أهلاً بك في فضاء شباب ولاية تيارت. يمكنك الاطلاع على كافة الأنشطة والمبادرات الجمعوية المتاحة، والتسجيل المباشر فيها.
+                        </p>
+                    </div>
+
+                    <!-- إحصائيات المنخرط الشخصية -->
+                    <div class="relative z-10 pt-4 border-t border-white/15 flex flex-wrap items-center gap-3 text-xs font-bold text-white">
+                        <div class="flex items-center gap-2 bg-black/30 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/10">
+                            <i class="fas fa-map-marker-alt text-red-400"></i>
+                            <span id="homeMemberLocation">ولاية تيارت</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-black/30 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/10">
+                            <i class="fas fa-calendar-alt text-emerald-300"></i>
+                            <span id="homeMemberAge">العمر: -- سنة</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-black/30 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/10">
+                            <i class="fas fa-heart text-pink-400"></i>
+                            <span id="homeMemberInterestsCount">0 اهتمامات</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8️⃣ نظام الاستبيان السريع للشباب "اقترح نشاطاً" (YOUTH POLLS) -->
+            <div class="glass-card rounded-3xl p-5 border border-emerald-200 shadow-sm relative overflow-hidden">
+                <div class="flex items-start justify-between flex-wrap gap-2 mb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-10 h-10 rounded-2xl bg-dz-green text-white flex items-center justify-center text-lg shadow-md">
+                            <i class="fas fa-poll-h"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-sm text-slate-800">صوت شباب تيارت: ما هو النشاط الذي تتمنى أن نطلقه الشهر القادم؟</h3>
+                            <p class="text-[11px] text-slate-500 font-semibold">صوتك يحدد برامج وفعاليات الجمعية في ولاية تيارت</p>
+                        </div>
+                    </div>
+                    <span class="bg-emerald-100 text-dz-green text-[10px] font-black px-2.5 py-1 rounded-full">استبيان تفاعلي شهري</span>
+                </div>
+
+                <!-- خيارات التصويت -->
+                <div id="pollContainer" class="space-y-2 pt-1">
+                    <button onclick="votePoll(0)" class="w-full bg-white hover:bg-emerald-50 border border-slate-200 hover:border-dz-green p-3 rounded-2xl text-xs font-bold text-slate-700 flex items-center justify-between transition group">
+                        <span class="flex items-center gap-2">
+                            <i class="fas fa-futbol text-dz-green"></i>
+                            <span>دورة كروية ليلية بين أحياء وبلديات تيارت</span>
+                        </span>
+                        <span id="pollVoteCount0" class="text-slate-400 group-hover:text-dz-green font-black">48% (120 صوت)</span>
+                    </button>
+
+                    <button onclick="votePoll(1)" class="w-full bg-white hover:bg-emerald-50 border border-slate-200 hover:border-dz-green p-3 rounded-2xl text-xs font-bold text-slate-700 flex items-center justify-between transition group">
+                        <span class="flex items-center gap-2">
+                            <i class="fas fa-laptop-code text-blue-600"></i>
+                            <span>هاكاثون ومخيم تدريبي في الذكاء الاصطناعي والبرمجة</span>
+                        </span>
+                        <span id="pollVoteCount1" class="text-slate-400 group-hover:text-dz-green font-black">32% (80 صوت)</span>
+                    </button>
+
+                    <button onclick="votePoll(2)" class="w-full bg-white hover:bg-emerald-50 border border-slate-200 hover:border-dz-green p-3 rounded-2xl text-xs font-bold text-slate-700 flex items-center justify-between transition group">
+                        <span class="flex items-center gap-2">
+                            <i class="fas fa-campground text-amber-600"></i>
+                            <span>مخيم استكشافي وتخييم شبابي بجبال وتلال تيارت</span>
+                        </span>
+                        <span id="pollVoteCount2" class="text-slate-400 group-hover:text-dz-green font-black">20% (50 صوت)</span>
+                    </button>
+                </div>
+
+                <!-- صندوق كتابة فكرة حرة -->
+                <div class="mt-3 pt-3 border-t border-slate-200/80 flex items-center gap-2">
+                    <input type="text" id="customIdeaInput" placeholder="أو اكتب فكرة نشاط تقترحه على مكتب الجمعية..." class="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs focus:border-dz-green focus:outline-none">
+                    <button onclick="submitCustomIdea()" class="btn-luxury bg-dz-green hover:bg-dz-dark text-white px-4 py-2 rounded-xl text-xs font-black shadow flex items-center gap-1.5 shrink-0">
+                        <span>إرسال الفكرة</span>
+                        <i class="fas fa-paper-plane text-[10px]"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- شريط التبديل بين الأنشطة والتسجيلات -->
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3 pt-2">
+                <div class="flex gap-2.5">
+                    <button onclick="switchMemberView('activities')" id="tabMemberActivities" class="bg-dz-green text-white px-4 py-2 rounded-xl text-xs font-black shadow-md transition flex items-center gap-2">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>الأنشطة المتاحة للتسجيل</span>
+                    </button>
+                    <button onclick="switchMemberView('myRegistrations')" id="tabMemberMyRegs" class="bg-white/90 text-slate-700 hover:bg-slate-200 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>أنشطتي المسجلة</span>
+                        <span id="myRegsCountBadge" class="bg-dz-red text-white text-[10px] px-2 py-0.5 rounded-full hidden">0</span>
+                    </button>
+                </div>
+
+                <button onclick="loadMemberDashboard()" class="text-xs text-slate-600 hover:text-dz-green font-bold flex items-center gap-1.5 transition bg-white/80 px-3 py-1.5 rounded-xl shadow-sm border border-slate-200">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>تحديث البيانات</span>
+                </button>
+            </div>
+
+            <!-- عرض شبكة الأنشطة -->
+            <div id="viewActivitiesContainer">
+                <div id="activitiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- تتعبأ ببطاقات الأنشطة ديناميكياً -->
+                </div>
+            </div>
+
+            <!-- عرض أنشطتي المسجلة -->
+            <div id="viewMyRegistrationsContainer" class="hidden">
+                <div id="myRegistrationsList" class="space-y-3.5">
+                    <!-- تتعبأ بطلبات التسجيل -->
+                </div>
+            </div>
+
+        </main>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- 5. لوحة تحكم المسؤول المتقدمة الموسطة (ADMIN DASHBOARD SCREEN)  -->
+    <!-- ============================================================== -->
+    <section id="adminScreen" class="screen min-h-screen bg-slate-900 text-slate-100 pb-12 w-full">
+        
+        <!-- الشريط العلوي للإدارة -->
+        <header class="glass-dark sticky top-0 z-40 border-b border-slate-700 px-4 py-3 shadow-xl w-full">
+            <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 bg-white rounded-full p-1 shadow-lg border-2 border-yellow-400 overflow-hidden">
+                        <img src="assets/logo.jpg" onerror="this.src='__LOGO_BASE64__'" alt="شعار MAY" class="w-full h-full object-contain rounded-full">
+                    </div>
+                    <div>
+                        <h1 class="text-sm sm:text-base font-black text-white flex items-center gap-2">
+                            <span>لوحة تحكم إدارة الجمعية</span>
+                            <span class="bg-dz-red text-white text-[10px] px-2.5 py-0.5 rounded-full font-bold">مسؤول الإعلام</span>
+                        </h1>
+                        <p class="text-[11px] text-slate-400 font-semibold">لقاء شباب الجزائر • المكتب الولائي تيارت</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2.5">
+                    <button onclick="exportToExcel()" class="btn-luxury bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-black shadow-lg flex items-center gap-2">
+                        <i class="fas fa-file-excel text-base text-yellow-300"></i>
+                        <span>تصدير ملف Excel المعتمد</span>
+                    </button>
+                    <button onclick="handleLogout()" class="bg-dz-red hover:bg-red-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
+                        <span>خروج</span>
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- المحتوى الرئيسي للإدارة الموسط -->
+        <main class="max-w-7xl mx-auto w-full p-4 sm:p-6 space-y-6 flex-1 text-right">
+            
+            <!-- بطاقات الإحصائيات الفورية الثلاث -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="glass-dark p-5 rounded-3xl border border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 mb-1">إجمالي المنخرطين الشباب</p>
+                        <h3 id="statTotalMembers" class="text-3xl font-black text-emerald-400">0</h3>
+                        <p class="text-[11px] text-slate-500 mt-1">مسجلون في المنصة</p>
+                    </div>
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-2xl border border-emerald-500/20">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+
+                <div class="glass-dark p-5 rounded-3xl border border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 mb-1">الأنشطة المنشورة</p>
+                        <h3 id="statTotalActivities" class="text-3xl font-black text-blue-400">0</h3>
+                        <p class="text-[11px] text-slate-500 mt-1">فعاليات ودورات ومبادرات</p>
+                    </div>
+                    <div class="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-2xl border border-blue-500/20">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                </div>
+
+                <div class="glass-dark p-5 rounded-3xl border border-slate-700 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 mb-1">طلبات المشاركة بالأنشطة</p>
+                        <h3 id="statTotalRegistrations" class="text-3xl font-black text-amber-400">0</h3>
+                        <p class="text-[11px] text-slate-500 mt-1">تسجيلات الأعضاء في الفعاليات</p>
+                    </div>
+                    <div class="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-2xl border border-amber-500/20">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3️⃣ لوحة إحصائيات أكثر النشاطات اختياراً من قبل شباب الولاية -->
+            <div class="glass-dark p-5 rounded-3xl border border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-black text-emerald-400 flex items-center gap-2">
+                        <i class="fas fa-chart-pie text-yellow-400"></i>
+                        <span>أكثر النشاطات والمجالات رغبةً واختياراً من قبل المنخرطين في تيارت</span>
+                    </h3>
+                    <span class="text-xs text-slate-400">تحديث لحظي حسب رغبات الشباب</span>
+                </div>
+                <div id="topInterestsChartContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <!-- تتعبأ بالنشاطات الأكثر شعبية -->
+                </div>
+            </div>
+
+            <!-- نموذج إضافة نشاط وإدارة الأنشطة -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- إضافة نشاط جديد مع حقل المدة الزمنية -->
+                <div class="glass-dark p-5 rounded-3xl border border-slate-700 lg:col-span-1 space-y-3.5">
+                    <h3 class="text-sm font-black text-emerald-400 flex items-center gap-2">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>إضافة نشاط / فعالية جديدة</span>
+                    </h3>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">عنوان النشاط <span class="text-dz-red">*</span></label>
+                        <input type="text" id="adminActTitle" placeholder="مثال: دورة الشطرنج أو مباراة خيرية" class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">المجال <span class="text-dz-red">*</span></label>
+                            <input type="text" id="adminActCategory" placeholder="رياضة، ثقافة، تطوع" class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">تاريخ النشاط <span class="text-dz-red">*</span></label>
+                            <input type="date" id="adminActDate" class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <!-- حقل المدة الزمنية الجديد المطلوب -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">
+                                <i class="fas fa-hourglass-half text-yellow-400 ml-1"></i>
+                                <span>المدة الزمنية <span class="text-dz-red">*</span></span>
+                            </label>
+                            <input type="text" id="adminActDuration" placeholder="مثال: يوم واحد / 3 أيام" value="يوم واحد" class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1">المقاعد المتاحة</label>
+                            <input type="number" id="adminActMax" value="50" class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">المكان والقاعة</label>
+                        <input type="text" id="adminActLocation" placeholder="دار الشباب أو المركز الثقافي - تيارت" class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">وصف مختصر للنشاط</label>
+                        <textarea id="adminActDesc" rows="2" placeholder="أهداف وشروط الحضور..." class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"></textarea>
+                    </div>
+
+                    <button onclick="adminPublishActivity()" id="btnAdminAddAct" class="btn-luxury w-full bg-dz-green hover:bg-emerald-600 text-white font-black py-2.5 rounded-xl text-xs shadow-lg transition flex items-center justify-center gap-2">
+                        <i class="fas fa-bullhorn"></i>
+                        <span>نشر النشاط فوراً في المنصة</span>
+                    </button>
+                </div>
+
+                <!-- جدول الأنشطة المنشورة مع خيار التعديل والحذف وتفقد المشاركين -->
+                <div class="glass-dark p-5 rounded-3xl border border-slate-700 lg:col-span-2 flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-black text-white flex items-center gap-2">
+                            <i class="fas fa-tasks text-blue-400"></i>
+                            <span>الأنشطة الحالية المنشورة</span>
+                        </h3>
+                        <span id="badgeActivitiesCount" class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full font-bold border border-slate-700">0 نشاط</span>
+                    </div>
+
+                    <div class="overflow-y-auto max-h-80 border border-slate-700 rounded-2xl">
+                        <table class="w-full text-right text-xs text-slate-300">
+                            <thead class="bg-slate-950 text-slate-400 sticky top-0 uppercase text-[11px]">
+                                <tr>
+                                    <th class="p-3">النشاط</th>
+                                    <th class="p-3">المجال</th>
+                                    <th class="p-3">التاريخ والمدة</th>
+                                    <th class="p-3 text-center">المسجلون</th>
+                                    <th class="p-3 text-center">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminActivitiesTableBody" class="divide-y divide-slate-800">
+                                <!-- تتعبأ بالأنشطة -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- سجل المنخرطين والبحث المتقدم والفلترة الشاملة -->
+            <div class="glass-dark p-5 rounded-3xl border border-slate-700 space-y-4">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div>
+                        <h3 class="text-sm font-black text-white flex items-center gap-2">
+                            <i class="fas fa-address-book text-emerald-400"></i>
+                            <span>سجل المنخرطين الشباب الكامل (خاص بالإدارة)</span>
+                        </h3>
+                        <p class="text-[11px] text-slate-400 mt-0.5">يمكنك البحث والتصفية، وتعديل أو حذف بيانات المنخرطين وصورهم</p>
+                    </div>
+
+                    <!-- شريط البحث السريع بالاسم أو اللقب أو رقم الهاتف -->
+                    <div class="w-full sm:w-80 relative">
+                        <input type="text" id="adminMemberSearch" oninput="applyAllMemberFilters()" placeholder="ابحث بالاسم، اللقب، أو رقم الهاتف..." class="w-full bg-slate-950 border border-slate-700 rounded-xl pr-9 pl-4 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none">
+                        <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- 2️⃣ شريط الفلترة المتقدمة حسب الولاية، البلدية، والنشاط المفضل -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-slate-950/60 rounded-2xl border border-slate-800">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1">فلترة حسب الولاية:</label>
+                        <select id="filterWilayaSelect" onchange="applyAllMemberFilters()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none">
+                            <option value="">جميع الولايات (الكل)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1">فلترة حسب البلدية:</label>
+                        <input type="text" id="filterCommuneInput" oninput="applyAllMemberFilters()" placeholder="اكتب اسم البلدية..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1">فلترة حسب النشاط المفضل:</label>
+                        <select id="filterInterestSelect" onchange="applyAllMemberFilters()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none">
+                            <option value="">جميع النشاطات (الكل)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- جدول المنخرطين الشامل مع زر التعديل والحذف للإدارة -->
+                <div class="overflow-x-auto border border-slate-700 rounded-2xl">
+                    <table class="w-full text-right text-xs text-slate-300">
+                        <thead class="bg-slate-950 text-slate-400 uppercase text-[11px]">
+                            <tr>
+                                <th class="p-3 text-center w-10">#</th>
+                                <th class="p-3">المنخرط</th>
+                                <th class="p-3">رقم الهاتف</th>
+                                <th class="p-3">الولاية / البلدية</th>
+                                <th class="p-3 text-center">العمر</th>
+                                <th class="p-3">الاهتمامات</th>
+                                <th class="p-3">تاريخ الانضمام</th>
+                                <th class="p-3 text-center">الإجراءات (خاص بالأدمن)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminMembersTableBody" class="divide-y divide-slate-800">
+                            <!-- تتعبأ بقائمة الأعضاء -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="flex items-center justify-between text-xs text-slate-400 pt-2">
+                    <span id="adminShowingMembersCount">عرض 0 منخرط</span>
+                    <button onclick="exportToExcel()" class="text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1.5 transition">
+                        <i class="fas fa-download"></i>
+                        <span>تحميل التقرير المعتمد (Excel)</span>
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- MODAL: تعديل النشاط (خاص بالأدمن)                              -->
+    <!-- ============================================================== -->
+    <div id="modalEditActivity" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-dark rounded-3xl max-w-lg w-full p-6 text-white shadow-2xl relative border border-slate-700 text-right">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-3 mb-4">
+                <h3 class="text-base font-black text-emerald-400 flex items-center gap-2">
+                    <i class="fas fa-edit"></i>
+                    <span>تعديل بيانات النشاط</span>
+                </h3>
+                <button onclick="closeEditActivityModal()" class="text-slate-400 hover:text-white text-lg p-1">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <input type="hidden" id="editActId">
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">عنوان النشاط</label>
+                    <input type="text" id="editActTitle" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">المجال</label>
+                        <input type="text" id="editActCategory" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">تاريخ النشاط</label>
+                        <input type="date" id="editActDate" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">المدة الزمنية للنشاط</label>
+                        <input type="text" id="editActDuration" placeholder="مثال: يوم واحد / أسبوع" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">الحد الأقصى للمقاعد</label>
+                        <input type="number" id="editActMax" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">المكان</label>
+                    <input type="text" id="editActLocation" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">الوصف</label>
+                    <textarea id="editActDesc" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 mt-4 pt-3 border-t border-slate-700">
+                <button onclick="closeEditActivityModal()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-xl text-xs font-bold">إلغاء</button>
+                <button onclick="adminSaveActivityEdit()" class="btn-luxury bg-dz-green hover:bg-emerald-600 px-5 py-2 rounded-xl text-xs font-black">حفظ التعديلات</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL: تعديل المنخرط والاسم والصورة (خاص بالأدمن)                -->
+    <!-- ============================================================== -->
+    <div id="modalEditMember" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-dark rounded-3xl max-w-lg w-full p-6 text-white shadow-2xl relative border border-slate-700 text-right max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-3 mb-4">
+                <h3 class="text-base font-black text-emerald-400 flex items-center gap-2">
+                    <i class="fas fa-user-edit"></i>
+                    <span>تعديل بيانات المنخرط والصورة</span>
+                </h3>
+                <button onclick="closeEditMemberModal()" class="text-slate-400 hover:text-white text-lg p-1">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <input type="hidden" id="editMemberId">
+            <div class="overflow-y-auto space-y-3 pr-1 pl-1">
+                
+                <!-- صورة المنخرط وإمكانية تعديلها -->
+                <div class="flex items-center gap-4 bg-slate-950 p-3 rounded-2xl border border-slate-800">
+                    <div class="w-16 h-16 rounded-full bg-slate-800 border-2 border-emerald-400 overflow-hidden flex items-center justify-center shrink-0">
+                        <img id="editMemberPhotoPreview" src="assets/logo.jpg" onerror="this.src='__LOGO_BASE64__'" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-slate-300 mb-1">تحديث صورة المنخرط:</label>
+                        <input type="file" id="editMemberPhotoInput" accept="image/*" onchange="previewMemberPhoto(event)" class="text-[11px] text-slate-400 file:mr-0 file:ml-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-dz-green file:text-white cursor-pointer">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">الاسم</label>
+                        <input type="text" id="editMemberFirst" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">اللقب</label>
+                        <input type="text" id="editMemberLast" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">رقم الهاتف</label>
+                    <input type="tel" id="editMemberPhone" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none text-left font-mono" dir="ltr">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">الولاية</label>
+                        <select id="editMemberWilaya" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white focus:outline-none">
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">البلدية</label>
+                        <input type="text" id="editMemberCommune" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">العمر (سنوات)</label>
+                    <input type="number" id="editMemberAge" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 mt-4 pt-3 border-t border-slate-700">
+                <button onclick="closeEditMemberModal()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-xl text-xs font-bold">إلغاء</button>
+                <button onclick="adminSaveMemberEdit()" class="btn-luxury bg-dz-green hover:bg-emerald-600 px-5 py-2 rounded-xl text-xs font-black">حفظ تعديلات المنخرط</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 1️⃣ MODAL: بطاقة المنخرط الرقمية الرسمية (DIGITAL MEMBER CARD)     -->
+    <!-- ============================================================== -->
+    <div id="modalMembershipCard" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="max-w-md w-full relative">
+            
+            <button onclick="closeMembershipCardModal()" class="absolute -top-10 left-0 text-white/80 hover:text-white text-lg font-bold flex items-center gap-1">
+                <i class="fas fa-times"></i>
+                <span>إغلاق</span>
+            </button>
+
+            <!-- جسم بطاقة العضوية الرقمية الوطنية -->
+            <div id="printableCard" class="membership-card-badge rounded-3xl p-6 text-white shadow-2xl relative border-2 border-yellow-400/80 overflow-hidden">
+                
+                <div class="flex items-center justify-between border-b border-white/20 pb-3 mb-4">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-12 h-12 bg-white rounded-full p-1 shadow border border-yellow-400 overflow-hidden">
+                            <img id="cardMemberAvatarImg" src="assets/logo.jpg" onerror="this.src='__LOGO_BASE64__'" alt="صورة المنخرط" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <div>
+                            <p class="text-[9px] text-yellow-300 font-bold tracking-wider">الجمهورية الجزائرية الديمقراطية الشعبية</p>
+                            <h3 class="text-sm font-black text-white leading-tight">جمعية لقاء شباب الجزائر M.A.Y</h3>
+                            <p class="text-[10px] text-emerald-200 font-semibold">المكتب الولائي لولاية تيارت</p>
+                        </div>
+                    </div>
+                    <div class="text-left">
+                        <span class="bg-dz-red/90 text-white text-[9px] font-black px-2.5 py-0.5 rounded-full border border-white/30 uppercase tracking-widest block text-center">
+                            بطاقة منخرط
+                        </span>
+                        <span class="text-[9px] text-yellow-300 font-bold block mt-1 text-center font-mono">14 - تيارت</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between gap-4">
+                    <div class="space-y-2 flex-1">
+                        <div>
+                            <span class="text-[10px] text-emerald-300 block font-bold">الاسم واللقب:</span>
+                            <h4 id="cardMemberName" class="text-base font-black text-yellow-300 leading-tight">--</h4>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div>
+                                <span class="text-[9px] text-emerald-300 block font-semibold">الولاية والبلدية:</span>
+                                <span id="cardMemberLocation" class="font-bold text-[11px] block">ولاية تيارت</span>
+                            </div>
+                            <div>
+                                <span class="text-[9px] text-emerald-300 block font-semibold">العمر:</span>
+                                <span id="cardMemberAge" class="font-bold text-[11px] block">-- سنة</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-[9px] text-emerald-300 block font-semibold">رقم العضوية المعتمد:</span>
+                            <span id="cardMemberId" class="font-mono font-black text-xs text-white bg-black/30 px-2 py-0.5 rounded border border-white/10 inline-block" dir="ltr">MAY-14-2026-0001</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-2 rounded-2xl shadow-lg border-2 border-yellow-400 text-center shrink-0">
+                        <img id="cardQrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=95x95&data=MAY-CONNECT-MEMBER" alt="QR Code" class="w-20 h-20 object-contain mx-auto">
+                        <span class="text-[8px] text-slate-800 font-black block mt-0.5">رمز التحقق الرسمي</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-[10px] text-emerald-200">
+                    <span class="flex items-center gap-1 font-bold">
+                        <i class="fas fa-check-circle text-yellow-400"></i>
+                        <span>عضوية رسمية معتمدة لسنة 2026</span>
+                    </span>
+                    <span class="font-bold text-white font-mono" id="cardIssueDate">2026</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 mt-4">
+                <button onclick="window.print()" class="btn-luxury flex-1 bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg">
+                    <i class="fas fa-print"></i>
+                    <span>طباعة / حفظ البطاقة كـ PDF</span>
+                </button>
+                <button onclick="closeMembershipCardModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition">
+                    إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ميثاق الشروط والأحكام الكامل (7 شروط) -->
+    <div id="modalTerms" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-3xl max-w-2xl w-full p-6 text-slate-800 shadow-2xl relative border-2 border-dz-green max-h-[90vh] flex flex-col text-right">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 bg-dz-green text-white rounded-xl flex items-center justify-center text-base">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-black text-dz-green">ميثاق الشروط والأحكام العامة للانخراط</h3>
+                        <p class="text-[11px] text-slate-500 font-bold">جمعية لقاء شباب الجزائر M.A.Y - المكتب الولائي لولاية تيارت</p>
+                    </div>
+                </div>
+                <button onclick="closeTermsModal()" class="text-slate-400 hover:text-dz-red text-xl p-1 transition">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="overflow-y-auto space-y-3.5 pr-1 pl-2 text-xs leading-relaxed text-slate-700">
+                <div class="bg-emerald-50 border-r-4 border-dz-green p-3 rounded-xl">
+                    <h4 class="font-black text-dz-green text-xs mb-1 flex items-center gap-1.5">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>1. شرط السن والفئة المستهدفة:</span>
+                    </h4>
+                    <p>التسجيل والانخراط مخصص حصرياً للشباب والشابات الذين تتراوح أعمارهم قانونياً بين <strong>18 و 40 سنة</strong> عند تاريخ التسجيل، ولا يُقبل من هو دون أو فوق ذلك.</p>
+                </div>
+
+                <div class="bg-slate-50 border-r-4 border-slate-500 p-3 rounded-xl">
+                    <h4 class="font-black text-slate-800 text-xs mb-1 flex items-center gap-1.5">
+                        <i class="fas fa-map-marked-alt text-dz-red"></i>
+                        <span>2. النطاق الجغرافي للأنشطة:</span>
+                    </h4>
+                    <p>جميع الأنشطة والفعاليات المنشورة في هذه المنصة تقام <strong>حصرياً داخل حدود ولاية تيارت</strong> وتحت إشراف مباشر للمكتب الولائي للجمعية.</p>
+                </div>
+
+                <div class="bg-blue-50 border-r-4 border-blue-600 p-3 rounded-xl">
+                    <h4 class="font-black text-blue-900 text-xs mb-1 flex items-center gap-1.5">
+                        <i class="fas fa-heartbeat text-blue-600"></i>
+                        <span>3. التصريح الصحي والبدني:</span>
+                    </h4>
+                    <p>يقر المنخرط بسلامته الصحية والبدنية العامة للمشاركة في النشاطات، مع التزامه الصريح بالإفصاح عن أي حالة صحية أو حساسية أو عائق بدني لمشرفي النشاط قبل انطلاقه تفادياً لأي طارئ.</p>
+                </div>
+
+                <div class="bg-amber-50 border-r-4 border-amber-600 p-3 rounded-xl">
+                    <h4 class="font-black text-amber-900 text-xs mb-1 flex items-center gap-1.5">
+                        <i class="fas fa-gavel text-amber-600"></i>
+                        <span>4. الانضباط والأخلاقيات والحياد:</span>
+                    </h4>
+                    <p>التعهد بالاحترام المتبادل، الروح الرياضية، والالتزام بأخلاقيات العمل الجمعوي، مع <strong>منع ممارسة أي نشاط سياسي أو حزبي أو ربحي</strong> داخل مرافق أو أنشطة الجمعية، امتثالاً لأحكام القانون رقم 12-06 المتعلق بالجمعيات.</p>
+                </div>
+
+                <div class="bg-purple-50 border-r-4 border-purple-600 p-3 rounded-xl">
+                    <h4 class="font-black text-purple-900 text-xs mb-1 flex items-center gap-1.5">
+                        <i class="fas fa-user-shield text-purple-600"></i>
+                        <span>5. حماية وسرية البيانات الشخصية:</span>
+                    </h4>
+                    <p>تلتزم الجمعية بحماية وتأمين بيانات المنخرطين وفق أحكام <strong>القانون رقم 18-07</strong> المتعلق بحماية المعطيات ذات الطابع الشخصي، وتتعهد بعدم مشاركتها مع أي جهة خارجية إلا في إطار الاعتماد الرسمي، مع حفظ حق المنخرط في طلب تعديل أو حذف بياناته في أي وقت.</p>
+                </div>
+
+                <div class="bg-rose-50 border-r-4 border-dz-red p-3 rounded-xl">
+                    <h4 class="font-black text-dz-red text-xs mb-1 flex items-center gap-1.5">
+                        <i class="fas fa-camera text-dz-red"></i>
+                        <span>6. التوثيق الإعلامي الرسمي:</span>
+                    </h4>
+                    <p>يوافق المنخرط على إمكانية ظهوره في الصور والفيديوهات التوثيقية الملتقطة أثناء الفعاليات، لاستخدامها حصراً في التقارير الأدبية والصفحات الرسمية للجمعية.</p>
+                </div>
+
+                <div class="bg-emerald-50 border-r-4 border-emerald-600 p-3 rounded-xl">
+                    <h4 class="font-black text-emerald-900 text-xs mb-1 flex items-center gap-1.5">
+                        <i class="fas fa-check-double text-emerald-600"></i>
+                        <span>7. صحة البيانات المصرح بها:</span>
+                    </h4>
+                    <p>يتعهد المنخرط بأن جميع المعلومات المدخلة صحيحة ومطابقة لوثائق هويته الرسمية، وبأنه يتمتع بحقوقه المدنية كاملة.</p>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-200 mt-3 flex justify-between items-center">
+                <button onclick="acceptTermsAndClose()" class="btn-luxury bg-dz-green hover:bg-dz-dark text-white px-5 py-2 rounded-xl text-xs font-black shadow flex items-center gap-2">
+                    <i class="fas fa-check"></i>
+                    <span>أوافق على هذه الشروط</span>
+                </button>
+                <button onclick="closeTermsModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition">
+                    إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: المشاركون في النشاط -->
+    <div id="modalParticipants" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-dark rounded-3xl max-w-2xl w-full p-6 text-white shadow-2xl relative border border-slate-700 text-right">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-3 mb-4">
+                <div>
+                    <h3 class="text-base font-black text-emerald-400" id="modalActTitle">المسجلون في النشاط</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">قائمة الأعضاء الذين أبدوا رغبتهم في الحضور</p>
+                </div>
+                <button onclick="closeParticipantsModal()" class="text-slate-400 hover:text-white text-lg p-1">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="overflow-y-auto max-h-96 border border-slate-700 rounded-2xl mb-4">
+                <table class="w-full text-right text-xs text-slate-300">
+                    <thead class="bg-slate-950 text-slate-400 text-[11px]">
+                        <tr>
+                            <th class="p-3">العضو</th>
+                            <th class="p-3">الهاتف</th>
+                            <th class="p-3">الولاية</th>
+                            <th class="p-3">تاريخ التسجيل</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalParticipantsTableBody" class="divide-y divide-slate-800">
+                        <!-- تتعبأ بأسماء المسجلين -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex justify-end">
+                <button onclick="closeParticipantsModal()" class="bg-slate-700 hover:bg-slate-600 px-5 py-2 rounded-xl text-xs font-bold transition">
+                    إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- الجافاسكريبت والربط بقاعدة البيانات SUPABASE                    -->
+    <!-- ============================================================== -->
+    <script>
+        const SUPABASE_URL = 'https://ezvdxktouralpducshfv.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_3JULt2RZvq3gsHT0WHwTLQ_avI1rnrJ';
+
+        const ADMIN_EMAIL = 'fireabdou9@gmail.com';
+        const ADMIN_PASS = 'condor123.';
+
+        let supabaseClient = null;
+        let currentUser = null;
+        let cachedMembers = [];
+        let cachedActivities = [];
+        let userRegisteredActivityIds = new Set();
+        let editMemberSelectedPhoto = null;
+
+        try {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        } catch (e) {
+            console.error('Supabase init error:', e);
+        }
+
+        const WILAYAS = [
+            '01 أدرار', '02 الشلف', '03 الأغواط', '04 أم البواقي', '05 باتنة',
+            '06 بجاية', '07 بسكرة', '08 بشار', '09 البليدة', '10 البويرة',
+            '11 تمنراست', '12 تبسة', '13 تلمسان', '14 تيارت', '15 تيزي وزو',
+            '16 الجزائر', '17 الجلفة', '18 جيجل', '19 سطيف', '20 سعيدة',
+            '21 سكيكدة', '22 سيدي بلعباس', '23 عنابة', '24 قالمة', '25 قسنطينة',
+            '26 المدية', '27 مستغانم', '28 المسيلة', '29 معسكر', '30 ورقلة',
+            '31 وهران', '32 البيض', '33 إليزي', '34 برج بوعريريج', '35 بومرداس',
+            '36 الطارف', '37 تندوف', '38 تيسمسيلت', '39 الوادي', '40 خنشلة',
+            '41 سوق أهراس', '42 تيبازة', '43 ميلة', '44 عين الدفلى', '45 النعامة',
+            '46 عين تموشنت', '47 غرداية', '48 غليزان', '49 تيميمون', '50 برج باجي مختار',
+            '51 أولاد جلال', '52 بني عباس', '53 عين صالح', '54 عين قزام', '55 تقرت',
+            '56 جانت', '57 المغير', '58 المنيعة'
+        ];
+
+        const INTERESTS = [
+            '⚽ كرة القدم', '🤾 كرة اليد', '🏀 كرة السلة', '🏐 الكرة الطائرة',
+            '🏓 تنس الطاولة', '🏊 السباحة', '🥋 الجيدو والدفاع عن النفس', '🥊 الملاكمة',
+            '🏃 ألعاب القوى', '🚴 ركوب الدراجات', '🧗 تسلق الجبال والرحلات', '♟️ الشطرنج والألعاب الذهنية',
+            '💻 البرمجة والتطوير', '🤖 الذكاء الاصطناعي والروبوتيك', '📸 التصوير الفوتوغرافي', '🎬 المونتاج والسينما',
+            '🎨 التصميم الجرافيكي', '🎵 الموسيقى والعزف', '🎤 الإنشاد', '🎭 المسرح والتمثيل',
+            '✍️ الكتابة والأدب', '📚 المطالعة', '🖌️ الرسم والفنون التشكيلية', '🌍 تعلم اللغات الأجنبية',
+            '💼 ريادة الأعمال', '📱 التسويق الرقمي', '🤝 العمل التطوعي والخيري', '🏥 الإسعافات الأولية',
+            '🌿 حماية البيئة والتشجير', '🍳 فن الطبخ', '🧘 اللياقة البدنية واليوغا', '⛺ الكشافة والتخييم',
+            '🎮 الألعاب الإلكترونية (E-Sports)'
+        ];
+
+        const DEFAULT_ACTIVITIES = [
+            {
+                id: 'act-football',
+                title: '⚽ دورة كرة القدم التضامنية لشباب ولاية تيارت',
+                category: 'رياضة وتضامن',
+                event_date: 'قريباً',
+                duration: '3 أيام',
+                location: 'المركب الرياضي - تيارت',
+                max_participants: 120,
+                status: 'upcoming',
+                description: 'دورة كروية ودية تجمع شباب بلديات وأحياء ولاية تيارت لتعزيز الروح الرياضية، التآخي، والتقارب في أجواء شبابية حماسية.'
+            },
+            {
+                id: 'act-chess',
+                title: '♟️ البطولة الولائية للشطرنج والألعاب الذهنية',
+                category: 'ألعاب ذهنية وتفكير',
+                event_date: 'قريباً',
+                duration: 'يوم واحد',
+                location: 'دار الشباب الإخوة - تيارت',
+                max_participants: 64,
+                status: 'upcoming',
+                description: 'منافسة تكتيكية فكرية لتنمية الذكاء والتخطيط والتركيز، بمشاركة نخبة هواة ومحترفي الشطرنج لولاية تيارت.'
+            },
+            {
+                id: 'act-book',
+                title: '📚 معرض المطالعة والصالون الشبابي لتبادل الكتب',
+                category: 'ثقافة ومطالعة',
+                event_date: 'قريباً',
+                duration: 'يومان',
+                location: 'المركز الثقافي - تيارت',
+                max_participants: 150,
+                status: 'upcoming',
+                description: 'تظاهرة ثقافية تفاعلية تتضمن معارض للكتب، ورشات قراءة ونقاشات أدبية وجلسات تبادل المؤلفات بين شباب الولاية.'
+            },
+            {
+                id: 'act-charity',
+                title: '🤝 الحملة الولائية الكبرى للتشجير والتطوع',
+                category: 'عمل تطوعي وبيئي',
+                event_date: 'قريباً',
+                duration: 'نهاية الأسبوع',
+                location: 'غابة الصنوبر والمساحات الخضراء - تيارت',
+                max_participants: 200,
+                status: 'upcoming',
+                description: 'نشاط تطوعي شبابي لغرس مئات الشجيرات وتنظيف الفضاءات البيئية وترسيخ قيم المواطنة والمحافظة على الطبيعة.'
+            }
+        ];
+
+        // دوال استخراج ومعالجة المدة الزمنية
+        function extractActivityDuration(act) {
+            if (act.duration) return act.duration;
+            if (act.description && act.description.startsWith('[المدة:')) {
+                const m = act.description.match(/^\[المدة:\s*([^\]]+)\]/);
+                if (m) return m[1];
+            }
+            return 'يوم واحد';
+        }
+
+        function extractCleanDescription(desc) {
+            if (!desc) return '';
+            return desc.replace(/^\[المدة:\s*[^\]]+\]\s*/, '');
+        }
+
+        // انتقال الصفحات المباشر والسلس بدون سكرولينغ وبمحاذاة في المنتصف
+        function showScreen(screenId) {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+
+            document.querySelectorAll('.screen').forEach(el => {
+                el.classList.remove('active');
+            });
+            const target = document.getElementById(screenId);
+            if (target) {
+                target.classList.add('active');
+                target.scrollTop = 0;
+            }
+
+            window.scrollTo(0, 0);
+
+            if (screenId === 'registerScreen') {
+                goToRegisterStep1();
+            } else if (screenId === 'homeScreen') {
+                loadMemberDashboard();
+            } else if (screenId === 'adminScreen') {
+                loadAdminDashboard();
+            }
+        }
+
+        function goToRegisterStep2() {
+            const first = document.getElementById('regFirstName').value.trim();
+            const last = document.getElementById('regLastName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const wilaya = document.getElementById('regWilaya').value;
+            const commune = document.getElementById('regCommune').value.trim();
+            const dob = document.getElementById('regDob').value;
+            const pass = document.getElementById('regPassword').value.trim();
+
+            if (!first || !last || !phone || !wilaya || !commune || !dob || !pass) {
+                showToast('يرجى ملء جميع الحقول الإجبارية (*)', true);
+                return;
+            }
+
+            const birthYear = new Date(dob).getFullYear();
+            const currentYear = new Date().getFullYear();
+            const age = currentYear - birthYear;
+
+            if (isNaN(age) || age < 18 || age > 40) {
+                showToast('التسجيل مخصص للشباب بين 18 و 40 سنة فقط!', true);
+                return;
+            }
+
+            document.getElementById('registerStep1').classList.add('hidden');
+            document.getElementById('registerStep2').classList.remove('hidden');
+            document.getElementById('stepTitle').textContent = 'الاهتمامات والشروط';
+            document.getElementById('stepBadge1').className = 'bg-slate-300 text-slate-600 w-5 h-5 rounded-full inline-flex items-center justify-center text-[10px] font-black';
+            document.getElementById('stepBadge2').className = 'bg-dz-green text-white w-5 h-5 rounded-full inline-flex items-center justify-center text-[10px] font-black';
+
+            window.scrollTo(0, 0);
+        }
+
+        function goToRegisterStep1() {
+            document.getElementById('registerStep2').classList.add('hidden');
+            document.getElementById('registerStep1').classList.remove('hidden');
+            document.getElementById('stepTitle').textContent = 'المعلومات الشخصية';
+            document.getElementById('stepBadge1').className = 'bg-dz-green text-white w-5 h-5 rounded-full inline-flex items-center justify-center text-[10px] font-black';
+            document.getElementById('stepBadge2').className = 'bg-slate-300 text-slate-600 w-5 h-5 rounded-full inline-flex items-center justify-center text-[10px] font-black';
+
+            window.scrollTo(0, 0);
+        }
+
+        function openTermsModal(event) {
+            if (event) event.stopPropagation();
+            document.getElementById('modalTerms').classList.remove('hidden');
+        }
+
+        function closeTermsModal() {
+            document.getElementById('modalTerms').classList.add('hidden');
+        }
+
+        function acceptTermsAndClose() {
+            document.getElementById('regTermsAgreed').checked = true;
+            closeTermsModal();
+            showToast('تمت الموافقة على ميثاق الشروط والأحكام بنجاح ✅');
+        }
+
+        function openMembershipCardModal() {
+            if (!currentUser) return;
+            const fullName = (currentUser.first_name || '') + ' ' + (currentUser.last_name || '');
+            const wilaya = currentUser.wilaya || 'ولاية تيارت';
+            const commune = currentUser.commune || 'تيارت';
+            const age = currentUser.age || '--';
+            const memberId = 'MAY-14-2026-' + (currentUser.id ? currentUser.id.slice(0, 5).toUpperCase() : '8492');
+
+            document.getElementById('cardMemberName').textContent = fullName;
+            document.getElementById('cardMemberLocation').textContent = wilaya + ' • ' + commune;
+            document.getElementById('cardMemberAge').textContent = age + ' سنة';
+            document.getElementById('cardMemberId').textContent = memberId;
+            document.getElementById('cardIssueDate').textContent = new Date().toLocaleDateString('ar-DZ');
+
+            const savedPhoto = localStorage.getItem('may_avatar_' + currentUser.id) || localStorage.getItem('may_avatar_' + currentUser.phone);
+            if (savedPhoto) {
+                document.getElementById('cardMemberAvatarImg').src = savedPhoto;
+            } else {
+                document.getElementById('cardMemberAvatarImg').src = 'assets/logo.jpg';
+            }
+
+            const qrData = encodeURIComponent('MEMBER:' + fullName + '|ID:' + memberId + '|WILAYA:' + wilaya);
+            document.getElementById('cardQrImage').src = 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' + qrData;
+
+            document.getElementById('modalMembershipCard').classList.remove('hidden');
+        }
+
+        function closeMembershipCardModal() {
+            document.getElementById('modalMembershipCard').classList.add('hidden');
+        }
+
+        function votePoll(optionIndex) {
+            const counts = [
+                '52% (135 صوت) ✅ صوتك مسجل',
+                '31% (82 صوت) ✅ صوتك مسجل',
+                '17% (45 صوت) ✅ صوتك مسجل'
+            ];
+            const targetEl = document.getElementById('pollVoteCount' + optionIndex);
+            if (targetEl) {
+                targetEl.textContent = counts[optionIndex];
+                targetEl.className = 'text-dz-green font-black';
+            }
+            showToast('شكراً لتصويتك! صوتك يصنع برامج الجمعية القادمة في تيارت 📊');
+        }
+
+        function submitCustomIdea() {
+            const input = document.getElementById('customIdeaInput');
+            const idea = input.value.trim();
+            if (!idea) {
+                showToast('يرجى كتابة فكرة النشاط قبل الإرسال', true);
+                return;
+            }
+            showToast('تم استلام اقتراحك بنجاح! سيتم دراسته من طرف مكتب الجمعية 🚀');
+            input.value = '';
+        }
+
+        let toastTimer = null;
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastMsg = document.getElementById('toastMessage');
+
+            if (toastTimer) clearTimeout(toastTimer);
+
+            toastMsg.textContent = message;
+            if (isError) {
+                toast.className = 'pointer-events-auto transform transition-all duration-300 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl text-sm font-bold text-white border border-white/20 bg-dz-red';
+                toastIcon.className = 'fas fa-exclamation-circle text-xl shrink-0';
+            } else {
+                toast.className = 'pointer-events-auto transform transition-all duration-300 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl text-sm font-bold text-white border border-white/20 bg-dz-green';
+                toastIcon.className = 'fas fa-check-circle text-xl shrink-0';
+            }
+
+            toast.classList.remove('hidden', 'translate-y-[-20px]', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-[-20px]', 'opacity-0');
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 3800);
+        }
+
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'far fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'far fa-eye';
+            }
+        }
+
+        function calculateRealTimeAge(dobValue) {
+            const feedback = document.getElementById('ageFeedback');
+            if (!dobValue) {
+                feedback.textContent = '';
+                return null;
+            }
+            const birthYear = new Date(dobValue).getFullYear();
+            const currentYear = new Date().getFullYear();
+            const age = currentYear - birthYear;
+
+            if (isNaN(age)) {
+                feedback.textContent = '';
+                return null;
+            }
+
+            if (age < 18 || age > 40) {
+                feedback.innerHTML = '<span class="text-dz-red"><i class="fas fa-exclamation-triangle"></i> العمر المحسوب: ' + age + ' سنة (التسجيل مخصص بين 18 و 40 سنة فقط)</span>';
+            } else {
+                feedback.innerHTML = '<span class="text-dz-green"><i class="fas fa-check-circle"></i> العمر: ' + age + ' سنة (مقبول ومطابق للشروط)</span>';
+            }
+            return age;
+        }
+
+        async function handleRegister() {
+            const first = document.getElementById('regFirstName').value.trim();
+            const last = document.getElementById('regLastName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const wilaya = document.getElementById('regWilaya').value;
+            const commune = document.getElementById('regCommune').value.trim();
+            const dob = document.getElementById('regDob').value;
+            const pass = document.getElementById('regPassword').value.trim();
+            const termsAgreed = document.getElementById('regTermsAgreed').checked;
+
+            if (!first || !last || !phone || !wilaya || !commune || !dob || !pass) {
+                showToast('يرجى ملء جميع الحقول الإجبارية (*)', true);
+                goToRegisterStep1();
+                return;
+            }
+
+            const birthYear = new Date(dob).getFullYear();
+            const currentYear = new Date().getFullYear();
+            const age = currentYear - birthYear;
+
+            if (isNaN(age) || age < 18 || age > 40) {
+                showToast('التسجيل مخصص للشباب بين 18 و 40 سنة فقط!', true);
+                goToRegisterStep1();
+                return;
+            }
+
+            if (!termsAgreed) {
+                showToast('يجب الموافقة على ميثاق الشروط والأحكام لإتمام الانخراط!', true);
+                return;
+            }
+
+            const selectedChips = Array.from(document.querySelectorAll('.interest-chip.selected')).map(el => el.getAttribute('data-interest'));
+
+            const btn = document.getElementById('btnRegisterSubmit');
+            const orig = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin text-lg"></i> <span>جاري تسجيل الحساب...</span>';
+
+            try {
+                const payload = {
+                    first_name: first,
+                    last_name: last,
+                    phone: phone,
+                    wilaya: wilaya,
+                    commune: commune,
+                    date_of_birth: dob,
+                    age: age,
+                    password_hash: pass,
+                    interests: selectedChips
+                };
+
+                const { data, error } = await supabaseClient
+                    .from('members')
+                    .insert([payload])
+                    .select();
+
+                if (error) {
+                    if (error.code === '23505' || (error.message && error.message.includes('unique'))) {
+                        showToast('رقم الهاتف مسجل بالفعل في الجمعية!', true);
+                    } else {
+                        showToast('فشل التسجيل: ' + (error.message || 'خطأ غير متوقع'), true);
+                    }
+                    return;
+                }
+
+                if (data && data.length > 0) {
+                    currentUser = data[0];
+                    localStorage.setItem('may_user', JSON.stringify(currentUser));
+                    localStorage.setItem('may_role', 'member');
+                    showToast('🎉 مرحباً بك في جمعية لقاء شباب الجزائر! تم إصدار بطاقتك الرقمية');
+                    showScreen('homeScreen');
+                    setTimeout(() => openMembershipCardModal(), 600);
+                }
+            } catch (err) {
+                showToast('تعذر الاتصال بقاعدة البيانات. تحقق من الإنترنت', true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = orig;
+            }
+        }
+
+        async function handleLogin() {
+            const identifier = document.getElementById('loginIdentifier').value.trim();
+            const pass = document.getElementById('loginPassword').value.trim();
+
+            if (!identifier || !pass) {
+                showToast('يرجى إدخال رقم الهاتف أو البريد وكلمة المرور', true);
+                return;
+            }
+
+            if (identifier === ADMIN_EMAIL && pass === ADMIN_PASS) {
+                currentUser = { email: ADMIN_EMAIL, role: 'admin', name: 'مسؤول الإعلام' };
+                localStorage.setItem('may_role', 'admin');
+                localStorage.setItem('may_user', JSON.stringify(currentUser));
+                showToast('مرحباً بك سيدي مسؤول الإعلام 👑');
+                showScreen('adminScreen');
+                return;
+            }
+
+            const btn = document.getElementById('btnLoginSubmit');
+            const orig = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin text-lg"></i> <span>جاري التحقق...</span>';
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('members')
+                    .select('*')
+                    .eq('phone', identifier)
+                    .eq('password_hash', pass);
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    currentUser = data[0];
+                    localStorage.setItem('may_role', 'member');
+                    localStorage.setItem('may_user', JSON.stringify(currentUser));
+                    showToast('أهلاً بك مجدداً يا ' + currentUser.first_name + ' 👋');
+                    showScreen('homeScreen');
+                } else {
+                    showToast('رقم الهاتف أو كلمة المرور غير صحيحة!', true);
+                }
+            } catch (err) {
+                showToast('حدث خطأ أثناء محاولة تسجيل الدخول', true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = orig;
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            userRegisteredActivityIds.clear();
+            localStorage.removeItem('may_user');
+            localStorage.removeItem('may_role');
+            showToast('تم تسجيل الخروج بنجاح');
+            showScreen('loginScreen');
+        }
+
+        async function loadMemberDashboard() {
+            if (!currentUser || !currentUser.first_name) {
+                const saved = localStorage.getItem('may_user');
+                if (saved) currentUser = JSON.parse(saved);
+                else { showScreen('loginScreen'); return; }
+            }
+
+            document.getElementById('navMemberName').textContent = currentUser.first_name;
+            document.getElementById('homeMemberFullName').textContent = currentUser.first_name + ' ' + currentUser.last_name;
+            document.getElementById('homeMemberLocation').textContent = currentUser.wilaya + ' • ' + currentUser.commune;
+            document.getElementById('homeMemberAge').textContent = 'العمر: ' + (currentUser.age || '--') + ' سنة';
+            document.getElementById('homeMemberInterestsCount').textContent = (currentUser.interests || []).length + ' اهتمامات';
+
+            await fetchActivitiesAndUserRegistrations();
+        }
+
+        async function fetchActivitiesAndUserRegistrations() {
+            const grid = document.getElementById('activitiesGrid');
+            grid.innerHTML = '<div class="col-span-full text-center py-12 text-slate-500">' +
+                '<i class="fas fa-circle-notch fa-spin text-3xl text-dz-green mb-3"></i>' +
+                '<p class="font-bold text-sm">جاري تحميل أنشطة الجمعية...</p></div>';
+
+            try {
+                const [actRes, regRes] = await Promise.all([
+                    supabaseClient.from('activities').select('*').order('created_at', { ascending: false }),
+                    supabaseClient.from('registrations').select('activity_id, status, created_at').eq('member_id', currentUser.id)
+                ]);
+
+                let dbActivities = actRes.data || [];
+                const userRegs = regRes.data || [];
+
+                if (dbActivities.length === 0) {
+                    cachedActivities = DEFAULT_ACTIVITIES;
+                } else {
+                    cachedActivities = dbActivities;
+                }
+
+                userRegisteredActivityIds = new Set(userRegs.map(r => r.activity_id));
+                document.getElementById('myRegsCountBadge').textContent = userRegs.length;
+                document.getElementById('myRegsCountBadge').classList.toggle('hidden', userRegs.length === 0);
+
+                renderMemberActivitiesGrid(cachedActivities);
+                renderMyRegistrationsList(cachedActivities, userRegs);
+
+            } catch (err) {
+                cachedActivities = DEFAULT_ACTIVITIES;
+                renderMemberActivitiesGrid(cachedActivities);
+            }
+        }
+
+        function renderMemberActivitiesGrid(activities) {
+            const grid = document.getElementById('activitiesGrid');
+            if (!activities || activities.length === 0) {
+                activities = DEFAULT_ACTIVITIES;
+            }
+
+            grid.innerHTML = activities.map(act => {
+                const isRegistered = userRegisteredActivityIds.has(act.id);
+                const isUpcoming = act.status === 'upcoming' || (act.event_date && act.event_date.includes('قريباً'));
+                const duration = extractActivityDuration(act);
+                const cleanDesc = extractCleanDescription(act.description);
+
+                const statusBadge = isUpcoming 
+                    ? '<span class="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm"><i class="fas fa-hourglass-half text-amber-600 animate-pulse"></i><span>قريباً</span></span>'
+                    : '<span class="bg-emerald-100 text-dz-green border border-emerald-300 text-[10px] font-black px-2.5 py-0.5 rounded-full">مفتوح الآن</span>';
+
+                const regBadgeOrBtn = isRegistered 
+                    ? '<div class="w-full bg-emerald-100 text-dz-green font-black py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 border border-emerald-300 shadow-sm"><i class="fas fa-check-circle text-emerald-600"></i><span>أنت مسجل في هذا النشاط</span></div>'
+                    : '<button onclick="handleActivityRegistration(\'' + act.id + '\', this)" class="btn-luxury w-full bg-dz-green hover:bg-dz-dark text-white font-black py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-md"><span>' + (isUpcoming ? 'تسجيل اهتمام مسبق بالنشاط' : 'تسجيل في هذا النشاط') + '</span><i class="fas fa-ticket-alt"></i></button>';
+
+                return '<div class="glass-card rounded-3xl p-5 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between border border-white/80">' +
+                    '<div>' +
+                    '<div class="flex items-center justify-between gap-2 mb-3">' +
+                    '<span class="text-[11px] font-bold bg-emerald-50 text-dz-green px-3 py-1 rounded-full border border-emerald-200">' +
+                    '<i class="fas fa-tag ml-1"></i>' + (act.category || 'نشاط جمعوي') + '</span>' +
+                    statusBadge +
+                    '</div>' +
+                    '<h3 class="font-black text-base text-slate-800 mb-2 leading-snug">' + act.title + '</h3>' +
+                    '<p class="text-xs text-slate-600 line-clamp-3 mb-4 leading-relaxed">' + (cleanDesc || 'مبادرة هادفة لتعزيز روح المبادرة والعمل الجمعوي لدى شباب الجزائر.') + '</p>' +
+                    '</div>' +
+                    '<div class="space-y-3 pt-3 border-t border-slate-200/60">' +
+                    '<div class="flex items-center justify-between text-xs text-slate-600 font-bold flex-wrap gap-1">' +
+                    '<span class="flex items-center gap-1.5"><i class="fas fa-calendar-alt text-dz-red"></i><span>' + (act.event_date || 'قريباً') + '</span></span>' +
+                    '<span class="flex items-center gap-1 text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-lg text-[10px]"><i class="fas fa-hourglass-half"></i><span>المدة: ' + duration + '</span></span>' +
+                    '</div>' +
+                    '<div class="text-[11px] text-slate-500 font-semibold flex items-center gap-1">' +
+                    '<i class="fas fa-map-marker-alt text-dz-green"></i><span>' + (act.location || 'ولاية تيارت') + '</span>' +
+                    '</div>' +
+                    regBadgeOrBtn +
+                    '</div></div>';
+            }).join('');
+        }
+
+        function renderMyRegistrationsList(activities, userRegs) {
+            const list = document.getElementById('myRegistrationsList');
+            if (!userRegs || userRegs.length === 0) {
+                list.innerHTML = '<div class="text-center py-10 glass-card rounded-2xl"><p class="text-xs text-slate-500 font-bold">لم تسجل في أي نشاط بعد</p></div>';
+                return;
+            }
+
+            const allActs = [...activities, ...DEFAULT_ACTIVITIES];
+            const actMap = new Map(allActs.map(a => [a.id, a]));
+
+            list.innerHTML = userRegs.map(reg => {
+                const act = actMap.get(reg.activity_id) || { title: 'نشاط جمعوي', event_date: 'غير محدد', category: 'عام' };
+                let statusBadge = '<span class="bg-amber-100 text-amber-800 text-[11px] font-bold px-3 py-1 rounded-full border border-amber-300">قيد المراجعة</span>';
+                if (reg.status === 'approved') statusBadge = '<span class="bg-emerald-100 text-emerald-800 text-[11px] font-bold px-3 py-1 rounded-full border border-emerald-300">مقبول للحضور ✅</span>';
+                if (reg.status === 'rejected') statusBadge = '<span class="bg-rose-100 text-rose-800 text-[11px] font-bold px-3 py-1 rounded-full border border-rose-300">نعتذر، اكتمل العدد</span>';
+
+                return '<div class="glass-card rounded-2xl p-4 shadow-sm flex items-center justify-between flex-wrap gap-3">' +
+                    '<div>' +
+                    '<span class="text-[10px] font-bold text-dz-green bg-emerald-50 px-2 py-0.5 rounded-md">' + act.category + '</span>' +
+                    '<h4 class="font-black text-sm text-slate-800 mt-1">' + act.title + '</h4>' +
+                    '<p class="text-[11px] text-slate-500 mt-0.5"><i class="fas fa-calendar-alt ml-1"></i> التاريخ: ' + act.event_date + '</p>' +
+                    '</div>' +
+                    '<div>' + statusBadge + '</div></div>';
+            }).join('');
+        }
+
+        async function handleActivityRegistration(activityId, btn) {
+            if (!currentUser) return;
+            const orig = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> <span>جاري التسجيل...</span>';
+
+            try {
+                if (activityId.startsWith('act-')) {
+                    userRegisteredActivityIds.add(activityId);
+                    showToast('تم تسجيل اهتمامك بهذا النشاط بنجاح! سيتم إشعارك عند الانطلاق ⏳');
+                    await fetchActivitiesAndUserRegistrations();
+                    return;
+                }
+
+                const { error } = await supabaseClient
+                    .from('registrations')
+                    .insert([{
+                        member_id: currentUser.id,
+                        activity_id: activityId,
+                        motivation: 'تسجيل تلقائي عبر المنصة الرقمية M.A.Y CONNECT',
+                        status: 'pending'
+                    }]);
+
+                if (error) {
+                    if (error.code === '23505') {
+                        showToast('أنت مسجل بالفعل في هذا النشاط!', true);
+                    } else {
+                        throw error;
+                    }
+                } else {
+                    showToast('تم إرسال طلب تسجيلك في النشاط بنجاح! 🎉');
+                    userRegisteredActivityIds.add(activityId);
+                    await fetchActivitiesAndUserRegistrations();
+                }
+            } catch (err) {
+                showToast('حدث خطأ أثناء التسجيل في النشاط', true);
+                btn.disabled = false;
+                btn.innerHTML = orig;
+            }
+        }
+
+        function switchMemberView(view) {
+            const actContainer = document.getElementById('viewActivitiesContainer');
+            const regContainer = document.getElementById('viewMyRegistrationsContainer');
+            const tabAct = document.getElementById('tabMemberActivities');
+            const tabReg = document.getElementById('tabMemberMyRegs');
+
+            if (view === 'activities') {
+                actContainer.classList.remove('hidden');
+                regContainer.classList.add('hidden');
+                tabAct.className = 'bg-dz-green text-white px-4 py-2 rounded-xl text-xs font-black shadow-md transition flex items-center gap-2';
+                tabReg.className = 'bg-white/90 text-slate-700 hover:bg-slate-200 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm';
+            } else {
+                actContainer.classList.add('hidden');
+                regContainer.classList.remove('hidden');
+                tabReg.className = 'bg-dz-green text-white px-4 py-2 rounded-xl text-xs font-black shadow-md transition flex items-center gap-2';
+                tabAct.className = 'bg-white/90 text-slate-700 hover:bg-slate-200 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm';
+            }
+        }
+
+        // ==============================================================
+        // لوحة الإدارة المتقدمة: الإحصائيات، الأنشطة، والمنخرطين
+        // ==============================================================
+        async function loadAdminDashboard() {
+            try {
+                const [memRes, actRes, regRes] = await Promise.all([
+                    supabaseClient.from('members').select('*').order('created_at', { ascending: false }),
+                    supabaseClient.from('activities').select('*').order('created_at', { ascending: false }),
+                    supabaseClient.from('registrations').select('*')
+                ]);
+
+                cachedMembers = memRes.data || [];
+                cachedActivities = (actRes.data && actRes.data.length > 0) ? actRes.data : DEFAULT_ACTIVITIES;
+                const allRegs = regRes.data || [];
+
+                document.getElementById('statTotalMembers').textContent = cachedMembers.length;
+                document.getElementById('statTotalActivities').textContent = cachedActivities.length;
+                document.getElementById('statTotalRegistrations').textContent = allRegs.length;
+                document.getElementById('badgeActivitiesCount').textContent = cachedActivities.length + ' نشاط';
+
+                // 3️⃣ حساب وعرض أكثر النشاطات والمجالات اختياراً
+                renderTopInterestsChart(cachedMembers);
+
+                renderAdminActivitiesTable(cachedActivities, allRegs);
+                applyAllMemberFilters();
+
+            } catch (err) {
+                showToast('خطأ أثناء جلب بيانات الإدارة', true);
+            }
+        }
+
+        // 3️⃣ حساب وتوليد مخطط أكثر النشاطات شعبية بين الشباب
+        function renderTopInterestsChart(members) {
+            const container = document.getElementById('topInterestsChartContainer');
+            if (!members || members.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-slate-400 text-xs py-4 text-center">لا توجد بيانات منخرطين كافية لحساب الإحصائيات</p>';
+                return;
+            }
+
+            const interestCounts = {};
+            members.forEach(m => {
+                (m.interests || []).forEach(it => {
+                    interestCounts[it] = (interestCounts[it] || 0) + 1;
+                });
+            });
+
+            const sorted = Object.entries(interestCounts).sort((a, b) => b[1] - a[1]).slice(0, 4);
+            const maxVal = sorted[0] ? sorted[0][1] : 1;
+
+            container.innerHTML = sorted.map(([interest, count]) => {
+                const percentage = Math.round((count / members.length) * 100);
+                return '<div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-1.5">' +
+                    '<div class="flex justify-between items-center text-xs font-bold">' +
+                    '<span class="text-white truncate max-w-[140px]">' + interest + '</span>' +
+                    '<span class="text-emerald-400 font-mono">' + count + ' شاب (' + percentage + '%)</span>' +
+                    '</div>' +
+                    '<div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">' +
+                    '<div class="bg-gradient-to-r from-emerald-500 to-yellow-400 h-full rounded-full transition-all duration-500" style="width: ' + percentage + '%"></div>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        // جدول الأنشطة مع أزرار التعديل والحذف وتفقد المسجلين
+        function renderAdminActivitiesTable(activities, allRegs) {
+            const tbody = document.getElementById('adminActivitiesTableBody');
+            if (!activities || activities.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-6 text-slate-500 font-bold">لم تقم بإضافة أي أنشطة بعد</td></tr>';
+                return;
+            }
+
+            const regsCountByAct = {};
+            (allRegs || []).forEach(r => {
+                regsCountByAct[r.activity_id] = (regsCountByAct[r.activity_id] || 0) + 1;
+            });
+
+            tbody.innerHTML = activities.map(act => {
+                const count = regsCountByAct[act.id] || 0;
+                const duration = extractActivityDuration(act);
+                return '<tr class="hover:bg-slate-800/60 transition">' +
+                    '<td class="p-3 font-bold text-white"><div>' + act.title + '</div><div class="text-[10px] text-slate-400">' + (act.location || 'ولاية تيارت') + '</div></td>' +
+                    '<td class="p-3"><span class="bg-blue-500/20 text-blue-300 text-[10px] px-2 py-0.5 rounded-md font-bold border border-blue-500/30">' + act.category + '</span></td>' +
+                    '<td class="p-3 font-mono text-slate-300"><div>' + act.event_date + '</div><div class="text-[10px] text-amber-400"><i class="fas fa-hourglass-half ml-1"></i>' + duration + '</div></td>' +
+                    '<td class="p-3 text-center"><button onclick="viewActivityParticipants(\'' + act.id + '\', \'' + escapeHtml(act.title) + '\')" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-xl text-emerald-300 font-bold text-[11px] transition border border-slate-700 shadow-sm"><i class="fas fa-users ml-1"></i>' + count + ' / ' + (act.max_participants || 100) + '</button></td>' +
+                    '<td class="p-3 text-center whitespace-nowrap">' +
+                    '<button onclick="adminOpenEditActivity(\'' + act.id + '\')" title="تعديل النشاط" class="bg-blue-500/20 hover:bg-blue-500 text-blue-300 hover:text-white w-8 h-8 rounded-xl transition inline-flex items-center justify-center ml-1.5"><i class="fas fa-pencil-alt text-xs"></i></button>' +
+                    '<button onclick="adminDeleteActivity(\'' + act.id + '\')" title="حذف النشاط" class="bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white w-8 h-8 rounded-xl transition inline-flex items-center justify-center"><i class="fas fa-trash-alt text-xs"></i></button>' +
+                    '</td>' +
+                    '</tr>';
+            }).join('');
+        }
+
+        async function adminPublishActivity() {
+            const title = document.getElementById('adminActTitle').value.trim();
+            const category = document.getElementById('adminActCategory').value.trim();
+            const date = document.getElementById('adminActDate').value;
+            const duration = document.getElementById('adminActDuration').value.trim() || 'يوم واحد';
+            const location = document.getElementById('adminActLocation').value.trim() || 'ولاية تيارت';
+            const max = parseInt(document.getElementById('adminActMax').value) || 100;
+            const desc = document.getElementById('adminActDesc').value.trim();
+
+            if (!title || !category || !date) {
+                showToast('يرجى ملء عنوان النشاط والمجال والتاريخ', true);
+                return;
+            }
+
+            const btn = document.getElementById('btnAdminAddAct');
+            const orig = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> <span>جاري النشر...</span>';
+
+            try {
+                const combinedDesc = '[المدة: ' + duration + ']\n' + desc;
+                const { error } = await supabaseClient
+                    .from('activities')
+                    .insert([{
+                        title,
+                        category,
+                        event_date: date,
+                        location,
+                        max_participants: max,
+                        description: combinedDesc,
+                        wilaya: 'ولاية تيارت',
+                        status: 'open'
+                    }]);
+
+                if (error) throw error;
+
+                showToast('تم نشر النشاط بنجاح مع المدة الزمنية! 🚀');
+                document.getElementById('adminActTitle').value = '';
+                document.getElementById('adminActCategory').value = '';
+                document.getElementById('adminActDate').value = '';
+                document.getElementById('adminActDesc').value = '';
+                await loadAdminDashboard();
+
+            } catch (err) {
+                showToast('فشل نشر النشاط', true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = orig;
+            }
+        }
+
+        function adminOpenEditActivity(actId) {
+            const act = cachedActivities.find(a => a.id === actId);
+            if (!act) return;
+
+            document.getElementById('editActId').value = act.id;
+            document.getElementById('editActTitle').value = act.title || '';
+            document.getElementById('editActCategory').value = act.category || '';
+            document.getElementById('editActDate').value = act.event_date || '';
+            document.getElementById('editActDuration').value = extractActivityDuration(act);
+            document.getElementById('editActLocation').value = act.location || 'ولاية تيارت';
+            document.getElementById('editActMax').value = act.max_participants || 100;
+            document.getElementById('editActDesc').value = extractCleanDescription(act.description);
+
+            document.getElementById('modalEditActivity').classList.remove('hidden');
+        }
+
+        function closeEditActivityModal() {
+            document.getElementById('modalEditActivity').classList.add('hidden');
+        }
+
+        async function adminSaveActivityEdit() {
+            const id = document.getElementById('editActId').value;
+            const title = document.getElementById('editActTitle').value.trim();
+            const category = document.getElementById('editActCategory').value.trim();
+            const date = document.getElementById('editActDate').value;
+            const duration = document.getElementById('editActDuration').value.trim() || 'يوم واحد';
+            const location = document.getElementById('editActLocation').value.trim();
+            const max = parseInt(document.getElementById('editActMax').value) || 100;
+            const desc = document.getElementById('editActDesc').value.trim();
+
+            if (!title || !category || !date) {
+                showToast('يرجى ملء جميع الحقول الأساسية للنشاط', true);
+                return;
+            }
+
+            try {
+                const combinedDesc = '[المدة: ' + duration + ']\n' + desc;
+                const { error } = await supabaseClient
+                    .from('activities')
+                    .update({
+                        title,
+                        category,
+                        event_date: date,
+                        location,
+                        max_participants: max,
+                        description: combinedDesc
+                    })
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showToast('تم تعديل بيانات النشاط بنجاح! ✅');
+                closeEditActivityModal();
+                await loadAdminDashboard();
+
+            } catch (err) {
+                showToast('فشل تعديل النشاط', true);
+            }
+        }
+
+        async function adminDeleteActivity(activityId) {
+            if (!confirm('هل أنت متأكد من رغبتك في حذف هذا النشاط وجميع التسجيلات التابعة له؟')) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('activities')
+                    .delete()
+                    .eq('id', activityId);
+
+                if (error) throw error;
+
+                showToast('تم حذف النشاط بنجاح');
+                await loadAdminDashboard();
+            } catch (err) {
+                showToast('تعذر حذف النشاط', true);
+            }
+        }
+
+        // ==============================================================
+        // 1 & 2. البحث والفلترة المتقدمة للمنخرطين
+        // ==============================================================
+        function applyAllMemberFilters() {
+            const q = (document.getElementById('adminMemberSearch').value || '').toLowerCase().trim();
+            const wilayaFilter = document.getElementById('filterWilayaSelect').value;
+            const communeFilter = (document.getElementById('filterCommuneInput').value || '').toLowerCase().trim();
+            const interestFilter = document.getElementById('filterInterestSelect').value;
+
+            let filtered = cachedMembers.filter(m => {
+                // 1. البحث بالاسم، اللقب، أو رقم الهاتف
+                const matchQuery = !q || (
+                    (m.first_name && m.first_name.toLowerCase().includes(q)) ||
+                    (m.last_name && m.last_name.toLowerCase().includes(q)) ||
+                    (m.phone && m.phone.includes(q))
+                );
+
+                // 2. الفلترة حسب الولاية
+                const matchWilaya = !wilayaFilter || (m.wilaya && m.wilaya.includes(wilayaFilter));
+
+                // 3. الفلترة حسب البلدية
+                const matchCommune = !communeFilter || (m.commune && m.commune.toLowerCase().includes(communeFilter));
+
+                // 4. الفلترة حسب النشاط المفضل
+                const matchInterest = !interestFilter || ((m.interests || []).includes(interestFilter));
+
+                return matchQuery && matchWilaya && matchCommune && matchInterest;
+            });
+
+            renderAdminMembersTable(filtered);
+        }
+
+        function renderAdminMembersTable(members) {
+            const tbody = document.getElementById('adminMembersTableBody');
+            document.getElementById('adminShowingMembersCount').textContent = 'عرض ' + members.length + ' من أصل ' + cachedMembers.length + ' منخرط';
+
+            if (!members || members.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-slate-500 font-bold">لا يوجد منخرطون يطابقون خيارات البحث والفلترة المحددة</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = members.map((m, idx) => {
+                const dateStr = m.created_at ? new Date(m.created_at).toLocaleDateString('ar-DZ') : '-';
+                const interestsBadges = (m.interests || []).slice(0, 3).map(it => '<span class="bg-slate-800 text-emerald-300 text-[10px] px-2 py-0.5 rounded-md border border-slate-700">' + it + '</span>').join(' ');
+                const extra = (m.interests || []).length > 3 ? '<span class="text-[10px] text-slate-400 font-bold">+' + ((m.interests || []).length - 3) + '</span>' : '';
+                const savedPhoto = localStorage.getItem('may_avatar_' + m.id) || localStorage.getItem('may_avatar_' + m.phone);
+                const avatarSrc = savedPhoto || 'assets/logo.jpg';
+
+                return '<tr class="hover:bg-slate-800/60 transition">' +
+                    '<td class="p-3 text-center text-slate-400 font-mono">' + (idx + 1) + '</td>' +
+                    '<td class="p-3 font-bold text-white whitespace-nowrap">' +
+                    '<div class="flex items-center gap-2">' +
+                    '<img src="' + avatarSrc + '" class="w-8 h-8 rounded-full object-cover border border-emerald-400 shrink-0">' +
+                    '<span>' + m.first_name + ' ' + m.last_name + '</span>' +
+                    '</div>' +
+                    '</td>' +
+                    '<td class="p-3 font-mono text-slate-300" dir="ltr">' + m.phone + '</td>' +
+                    '<td class="p-3 whitespace-nowrap"><span class="text-slate-200 font-bold">' + m.wilaya + '</span><span class="text-slate-400 text-[11px] block">' + m.commune + '</span></td>' +
+                    '<td class="p-3 text-center font-bold text-yellow-400">' + (m.age || '-') + '</td>' +
+                    '<td class="p-3"><div class="flex flex-wrap gap-1 items-center max-w-xs">' + interestsBadges + ' ' + extra + '</div></td>' +
+                    '<td class="p-3 text-slate-400 font-mono text-[11px]">' + dateStr + '</td>' +
+                    '<td class="p-3 text-center whitespace-nowrap">' +
+                    '<button onclick="adminOpenEditMember(\'' + m.id + '\')" title="تعديل بيانات المنخرط والصورة" class="bg-blue-500/20 hover:bg-blue-500 text-blue-300 hover:text-white w-8 h-8 rounded-xl transition inline-flex items-center justify-center ml-1.5"><i class="fas fa-user-edit text-xs"></i></button>' +
+                    '<button onclick="adminDeleteMember(\'' + m.id + '\')" title="حذف المنخرط نهائياً" class="bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white w-8 h-8 rounded-xl transition inline-flex items-center justify-center"><i class="fas fa-trash-alt text-xs"></i></button>' +
+                    '</td>' +
+                    '</tr>';
+            }).join('');
+        }
+
+        // 4. تعديل وحذف بيانات المنخرطين (خاص بالأدمن فقط)
+        function adminOpenEditMember(memberId) {
+            const m = cachedMembers.find(item => item.id === memberId);
+            if (!m) return;
+
+            document.getElementById('editMemberId').value = m.id;
+            document.getElementById('editMemberFirst').value = m.first_name || '';
+            document.getElementById('editMemberLast').value = m.last_name || '';
+            document.getElementById('editMemberPhone').value = m.phone || '';
+            document.getElementById('editMemberWilaya').value = m.wilaya || '';
+            document.getElementById('editMemberCommune').value = m.commune || '';
+            document.getElementById('editMemberAge').value = m.age || '';
+
+            const savedPhoto = localStorage.getItem('may_avatar_' + m.id) || localStorage.getItem('may_avatar_' + m.phone);
+            document.getElementById('editMemberPhotoPreview').src = savedPhoto || 'assets/logo.jpg';
+            editMemberSelectedPhoto = savedPhoto;
+
+            document.getElementById('modalEditMember').classList.remove('hidden');
+        }
+
+        function closeEditMemberModal() {
+            document.getElementById('modalEditMember').classList.add('hidden');
+        }
+
+        function previewMemberPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                editMemberSelectedPhoto = e.target.result;
+                document.getElementById('editMemberPhotoPreview').src = editMemberSelectedPhoto;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function adminSaveMemberEdit() {
+            const id = document.getElementById('editMemberId').value;
+            const first = document.getElementById('editMemberFirst').value.trim();
+            const last = document.getElementById('editMemberLast').value.trim();
+            const phone = document.getElementById('editMemberPhone').value.trim();
+            const wilaya = document.getElementById('editMemberWilaya').value;
+            const commune = document.getElementById('editMemberCommune').value.trim();
+            const age = parseInt(document.getElementById('editMemberAge').value) || null;
+
+            if (!first || !last || !phone) {
+                showToast('الاسم واللقب ورقم الهاتف حقول إجبارية', true);
+                return;
+            }
+
+            try {
+                const { error } = await supabaseClient
+                    .from('members')
+                    .update({
+                        first_name: first,
+                        last_name: last,
+                        phone: phone,
+                        wilaya: wilaya,
+                        commune: commune,
+                        age: age
+                    })
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                if (editMemberSelectedPhoto) {
+                    localStorage.setItem('may_avatar_' + id, editMemberSelectedPhoto);
+                    localStorage.setItem('may_avatar_' + phone, editMemberSelectedPhoto);
+                }
+
+                showToast('تم تعديل بيانات المنخرط والصورة بنجاح! ✅');
+                closeEditMemberModal();
+                await loadAdminDashboard();
+
+            } catch (err) {
+                showToast('فشل تعديل بيانات المنخرط: ' + (err.message || ''), true);
+            }
+        }
+
+        async function adminDeleteMember(memberId) {
+            if (!confirm('هل أنت متأكد من رغبتك في حذف هذا المنخرط نهائياً من سجل الجمعية؟ لا يمكن التراجع عن هذا الإجراء.')) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('members')
+                    .delete()
+                    .eq('id', memberId);
+
+                if (error) throw error;
+
+                showToast('تم حذف المنخرط من السجل بنجاح');
+                await loadAdminDashboard();
+            } catch (err) {
+                showToast('تعذر حذف المنخرط', true);
+            }
+        }
+
+        async function viewActivityParticipants(activityId, title) {
+            document.getElementById('modalActTitle').textContent = title;
+            const tbody = document.getElementById('modalParticipantsTableBody');
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6"><i class="fas fa-circle-notch fa-spin text-emerald-400"></i> جاري جلب المشاركين...</td></tr>';
+            document.getElementById('modalParticipants').classList.remove('hidden');
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('registrations')
+                    .select('created_at, members (first_name, last_name, phone, wilaya)')
+                    .eq('activity_id', activityId);
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-slate-400">لا يوجد مسجلون في هذا النشاط بعد</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = data.map(r => {
+                    const m = r.members || {};
+                    return '<tr>' +
+                        '<td class="p-3 font-bold text-white">' + (m.first_name || '') + ' ' + (m.last_name || '') + '</td>' +
+                        '<td class="p-3 font-mono text-slate-300" dir="ltr">' + (m.phone || '-') + '</td>' +
+                        '<td class="p-3">' + (m.wilaya || '-') + '</td>' +
+                        '<td class="p-3 text-[11px] text-slate-400 font-mono">' + new Date(r.created_at).toLocaleDateString('ar-DZ') + '</td>' +
+                        '</tr>';
+                }).join('');
+
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-dz-red">فشل جلب قائمة المسجلين</td></tr>';
+            }
+        }
+
+        function closeParticipantsModal() {
+            document.getElementById('modalParticipants').classList.add('hidden');
+        }
+
+        async function exportToExcel() {
+            try {
+                showToast('جاري تحضير وتصدير ملف Excel...');
+                const { data, error } = await supabaseClient
+                    .from('members')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    showToast('لا توجد بيانات منخرطين للتصدير حالياً', true);
+                    return;
+                }
+
+                const formattedRows = data.map((m, idx) => ({
+                    'الرقم': idx + 1,
+                    'الاسم': m.first_name || '',
+                    'اللقب': m.last_name || '',
+                    'رقم الهاتف': m.phone || '',
+                    'الولاية': m.wilaya || '',
+                    'البلدية': m.commune || '',
+                    'تاريخ الميلاد': m.date_of_birth || '',
+                    'العمر': m.age || '',
+                    'الاهتمامات والنشاطات': (m.interests || []).join(' - '),
+                    'تاريخ التسجيل': m.created_at ? new Date(m.created_at).toLocaleDateString('ar-DZ') : '',
+                    'قرار الرئيس (للاعتماد والختم)': 'مقبول عضوياً [       ]'
+                }));
+
+                const worksheet = XLSX.utils.json_to_sheet(formattedRows);
+                worksheet['!cols'] = [
+                    { wch: 6 }, { wch: 14 }, { wch: 14 }, { wch: 16 },
+                    { wch: 16 }, { wch: 16 }, { wch: 14 }, { wch: 8 },
+                    { wch: 38 }, { wch: 14 }, { wch: 28 }
+                ];
+
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'منخرطو الجمعية');
+
+                const dateStr = new Date().toISOString().slice(0, 10);
+                const fileName = 'منخرطو_MAY_ولاية_تيارت_' + dateStr + '.xlsx';
+
+                XLSX.writeFile(workbook, fileName);
+                showToast('تم تصدير وتحميل ملف Excel المعتمد بنجاح! 📊');
+
+            } catch (err) {
+                showToast('حدث خطأ أثناء تصدير ملف Excel', true);
+            }
+        }
+
+        function escapeHtml(str) {
+            return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // تعبئة الولايات في استمارة التسجيل وقوائم الفلترة
+            const wilayaSelect = document.getElementById('regWilaya');
+            const filterWilayaSelect = document.getElementById('filterWilayaSelect');
+            const editMemberWilaya = document.getElementById('editMemberWilaya');
+
+            WILAYAS.forEach(w => {
+                const opt = document.createElement('option');
+                opt.value = w;
+                opt.textContent = w;
+                wilayaSelect.appendChild(opt);
+
+                const opt2 = document.createElement('option');
+                opt2.value = w;
+                opt2.textContent = w;
+                filterWilayaSelect.appendChild(opt2);
+
+                const opt3 = document.createElement('option');
+                opt3.value = w;
+                opt3.textContent = w;
+                editMemberWilaya.appendChild(opt3);
+            });
+
+            // تعبئة قائمة فلترة الاهتمامات
+            const filterInterestSelect = document.getElementById('filterInterestSelect');
+            INTERESTS.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+                filterInterestSelect.appendChild(opt);
+            });
+
+            // تعبئة شبكة الاهتمامات للتسجيل
+            const interestsGrid = document.getElementById('interestsGrid');
+            const chipsCount = document.getElementById('selectedChipsCount');
+
+            INTERESTS.forEach(interest => {
+                const chip = document.createElement('button');
+                chip.type = 'button';
+                chip.setAttribute('data-interest', interest);
+                chip.className = 'interest-chip bg-white border border-slate-300 text-slate-700 font-bold px-2 py-1.5 rounded-xl text-[11px] text-center hover:border-dz-green transition shadow-sm';
+                chip.textContent = interest;
+
+                chip.addEventListener('click', () => {
+                    chip.classList.toggle('selected');
+                    const totalSelected = document.querySelectorAll('.interest-chip.selected').length;
+                    chipsCount.textContent = totalSelected + ' محددة';
+                });
+
+                interestsGrid.appendChild(chip);
+            });
+
+            const savedRole = localStorage.getItem('may_role');
+            const savedUser = localStorage.getItem('may_user');
+
+            if (savedRole === 'admin') {
+                currentUser = { email: ADMIN_EMAIL, role: 'admin' };
+                showScreen('adminScreen');
+            } else if (savedRole === 'member' && savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    showScreen('homeScreen');
+                } catch (e) {
+                    localStorage.removeItem('may_user');
+                    localStorage.removeItem('may_role');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
